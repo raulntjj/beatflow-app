@@ -8,7 +8,7 @@ import { BlurImage } from "../../ui/blur-image";
 
 export default function LoginForm() {
   return (
-    <div className="w-full h-full max-w-md p-8 rounded-xl shadow-md m-auto -translate-y-14">
+    <div className="w-full h-full max-w-md p-8 rounded-xl m-auto -translate-y-14">
       <BlurImage src={logo1} alt="logo" className="w-[130px] h-auto mx-auto mb-6" />  
       <h2 className="text-xl font-semibold text-center mb-6">Fazer login</h2>
       <form className="space-y-4">
