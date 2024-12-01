@@ -5,26 +5,34 @@ import { logo1 } from "../../../public";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { BlurImage } from "../../ui/blur-image";
-import { signIn, useSession } from "next-auth/react";
 import { FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { saveCookie } from "@/utils/saveCookie";
 
 export default function LoginForm() {
   const router = useRouter();
-  const { status, data } = useSession();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const response = await signIn("credentials", {
-      email: formData.get("email"),
-      password: formData.get("password"),
-      redirect: false,
+
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: formData.get("email"),
+        password: formData.get("password"),
+      }),
     });
 
-    if (response?.ok) {
+    const data = await res.json();
+    saveCookie(data.response.access_token);
+
+    if (res?.ok) {
       router.push("/feed");
+    } else {
+      redirect("/");
     }
   };
 

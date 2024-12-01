@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 import { description, projectName } from "../utils/constants";
 import "./globals.css";
-import { AuthProvider } from "../providers/auth";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,17 +25,19 @@ export const metadata: Metadata = {
   description: `${description}`,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { data: user } = await userGet();
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.className} antialiased bg-background`}
       >
-        <AuthProvider>{children}</AuthProvider>
+        {children}
       </body>
     </html>
   );
