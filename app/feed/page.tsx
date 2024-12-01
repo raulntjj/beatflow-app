@@ -1,14 +1,52 @@
-import { getServerSession } from "next-auth";
 import React from "react";
-import { authOptions } from "../api/lib/auth";
-import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+
+type Post = {
+  id: number;
+  content: string;
+};
 
 export default async function Feed() {
-  const session = await getServerSession(authOptions);
+  const cookieStore = await cookies();
+  const userToken = cookieStore.get("token")?.value;
 
-  if (!session || !session.user) {
-    redirect("/");
-  }
+  const fetchPosts = async () => {
+    try {
+      const res = await fetch(`${process.env.NEXTAUTH_URL}/api/posts`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
 
-  return <h1>Feed</h1>;
+      if (!res.ok) {
+        throw new Error("Erro ao buscar posts.");
+      }
+
+      const data = await res.json();
+      return data.response.data;
+    } catch (err) {
+      return [];
+    }
+  };
+
+  const posts = await fetchPosts();
+
+  return (
+    <div>
+      <ul>
+        {posts.length > 0 ? (
+          posts.map((post: Post) => (
+            <li key={post.id}>
+              <h2>Id: {post.id}</h2>
+              <h2>Conteúdo: {post.content}</h2>
+            </li>
+          ))
+        ) : (
+          <p>Nenhum post encontrado.</p>
+        )}
+      </ul>
+    </div>
+  );
 }
