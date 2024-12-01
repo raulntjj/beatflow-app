@@ -4,8 +4,8 @@ import React from "react";
 
 type User = {
   id: number;
-  nome: string;
-  username: string;
+  name: string;
+  last_name: string;
   email: string;
 };
 
@@ -14,7 +14,7 @@ type IUserContext = {
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 };
 
-const UserContext = React.createContext<IUserContext | null>(null);
+export const UserContext = React.createContext<IUserContext | null>(null);
 
 export const useUser = () => {
   const context = React.useContext(UserContext);
