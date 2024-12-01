@@ -3,10 +3,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/context/user-context";
 import getToken from "@/utils/getToken";
+import UserPost from "@/components/user/user-post";
 
 type Post = {
   id: number;
-  content: string;
+  post: {
+    content: string;
+    media_temp: string;
+  };
 };
 
 export default function Feed() {
@@ -20,7 +24,7 @@ export default function Feed() {
         const userToken = await getToken();
 
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/posts`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/me/feed`,
           {
             method: "GET",
             headers: {
@@ -35,6 +39,7 @@ export default function Feed() {
         }
 
         const data = await res.json();
+
         setPosts(data.response.data);
       } catch (err) {
         console.error("Erro ao buscar posts:", err);
@@ -60,12 +65,11 @@ export default function Feed() {
           {posts.length > 0 ? (
             posts.map((post) => (
               <li key={post.id}>
-                <h2>Id: {post.id}</h2>
-                <h2>Conteúdo: {post.content}</h2>
+                <UserPost post={post.post} />
               </li>
             ))
           ) : (
-            <p>Nenhum post encontrado.</p>
+            <p>Siga uma pessoa para que comecem a aparecer posts.</p>
           )}
         </ul>
       )}

@@ -7,6 +7,7 @@ type User = {
   name: string;
   last_name: string;
   email: string;
+  profile_photo_temp: string;
 };
 
 type IUserContext = {

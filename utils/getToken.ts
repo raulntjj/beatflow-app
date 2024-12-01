@@ -9,6 +9,6 @@ export default async function getToken() {
   if (userToken) {
     return userToken;
   } else {
-    throw Error("Erro ao buscar token.");
+    return null;
   }
 }
