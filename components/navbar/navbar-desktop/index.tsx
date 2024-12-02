@@ -1,8 +1,6 @@
 import LogoNavbar from "../navbar-logo";
 import NavbarItems from "./navbar-items";
 
-
-
 export default function NavbarDesktop() {
 
   return (
