@@ -9,15 +9,17 @@ import { redirect } from "next/navigation";
 
 type Post = {
   id: string;
-  user: {
-    id: string;
-    user: string;
-    profile_photo_temp: string;
+  post: {
+    user: {
+      id: string;
+      user: string;
+      profile_photo_temp: string;
+    };
+    content: string;
+    media_type: string;
+    media_temp: string;
+    created_at: string;
   };
-  content: string;
-  media_type: string;
-  media_temp: string;
-  created_at: string;
 };
 
 type ApiResponse = {
@@ -68,7 +70,7 @@ export default function Feed() {
   };
 
   return (
-    <div>
+    <div className="w-full">
       <h1>Olá {userData?.user?.name}</h1>
       <br />
       <br />

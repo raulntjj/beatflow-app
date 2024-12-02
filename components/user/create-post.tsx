@@ -80,7 +80,7 @@ export default function CreatePost() {
   };
 
   return (
-    <form onSubmit={handleSubmit} encType="multipart/form-data">
+    <form onSubmit={handleSubmit} encType="multipart/form-data" >
       <Input
         type="text"
         name="content"

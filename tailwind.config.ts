@@ -9,6 +9,9 @@ const config: Config = {
   ],
   theme: {
   	extend: {
+			screens: {
+				'tablet': '1150px',
+			},
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
@@ -51,6 +54,9 @@ const config: Config = {
   				'5': 'hsl(var(--chart-5))'
   			}
   		},
+			spacing: {
+        'full-minus-2rem': 'calc(100% - 2rem)',
+      },
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
