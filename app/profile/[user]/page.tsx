@@ -11,6 +11,9 @@ interface UserData {
   user: string;
   profile_photo_temp: string;
   name: string;
+  followers_count: string;
+  followed_count: string;
+  bio: string;
 }
 
 interface Follow {
@@ -52,6 +55,7 @@ export default function Profile({
 
         const data = await res.json();
         setUserData(data.response);
+        console.log(data);
 
         console.log(data);
         const userProfileId = data.response.id; // Use const
@@ -136,7 +140,11 @@ export default function Profile({
       <div>
         <ProfilePhoto src={userData?.profile_photo_temp} alt={userData?.name} />
         <h1>{userData?.user}</h1>
-        <span></span>
+        <div className="flex gap-2">
+        <span>Seguindo: {userData?.followed_count}</span>
+        <span>Seguidores: {userData?.followers_count}</span>
+        </div>
+        <p>{userData?.bio}</p>
       </div>
       {!isSameUser && (
         <button className="p-2 bg-blue-600 rounded-md" onClick={handleFollow}>
