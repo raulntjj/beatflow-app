@@ -99,7 +99,7 @@ export default function SearchUsers({ users }: SearchUsersProps) {
               </ul>
             </ScrollArea>
           ) : (
-            <p className="p-4 text-gray-500 text-sm">Nenhum resultado para "{query}"</p>
+            <p className="p-4 text-gray-500 text-sm">Nenhum resultado para &ldquo;{query}&ldquo;</p>
           )}
         </div>
       )}

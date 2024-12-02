@@ -2,18 +2,15 @@ import { Heart, Home, MenuIcon, PlusSquare } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { HiMiniUserGroup } from "react-icons/hi2";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../../ui/dialog";
-import { FaFileUpload } from "react-icons/fa";
-import ProfilePhoto from "../../user/profile-photo";
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Button } from "../../ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../../ui/dialog";
 import { FileUpload } from "../../ui/file-upload";
-
-
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import ProfilePhoto from "../../user/profile-photo";
 
 export default function NavbarItems() {
 
-  const [files, setFiles] = useState<File[]>([]);
+  const [files, setFiles] = useState<File[]>([]);// eslint-disable-line @typescript-eslint/no-unused-vars
   const handleFileUpload = (files: File[]) => {
     setFiles(files);
     console.log(files);
