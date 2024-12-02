@@ -32,8 +32,8 @@ export default function LoginForm() {
     if (res?.ok) {
       router.push("/feed");
     } else {
-      redirect("/");
-    }
+      redirect("/login");
+    }
   };
 
   return (

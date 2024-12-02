@@ -9,15 +9,17 @@ import { FaRegHeart, FaHeart } from "react-icons/fa";
 
 interface Post {
   id: string;
-  user: {
-    id: string;
-    user: string;
-    profile_photo_temp: string;
+  post: {
+    user: {
+      id: string;
+      user: string;
+      profile_photo_temp: string;
+    };
+    content: string;
+    media_type: string;
+    media_temp: string;
+    created_at: string;
   };
-  content: string;
-  media_type: string;
-  media_temp: string;
-  created_at: string;
 }
 
 interface Engagement {
@@ -31,6 +33,8 @@ export default function UserPost({ post }: { post: Post }) {
   const [likesCount, setLikesCount] = useState(0);
   const userData = useContext(UserContext);
   const userId = userData?.user?.id;
+
+  console.log(post);
 
   // Buscar engajamentos
   const getEngagements = async () => {
@@ -154,26 +158,34 @@ export default function UserPost({ post }: { post: Post }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <ProfilePhoto
-            src={post.user.profile_photo_temp}
-            alt={post.user.user}
+            src={post.post.user.profile_photo_temp}
+            alt={post.post.user.user}
           />
-          <span>{post.user.user}</span>
+          <span>{post.post.user.user}</span>
         </div>
         <div>
-          <span>{formatDate(post.created_at)}</span>
+          <span>{formatDate(post.post.created_at)}</span>
         </div>
       </div>
       <div className="pt-2">
-        <p>{post.content}</p>
+        <p>{post.post.content}</p>
       </div>
-      {post.media_type === "image" && (
+      {post.post.media_type === "image" && (
         <div>
           <Image
-            src={post.media_temp}
+            src={post.post.media_temp}
             alt="Media do post"
             width={500}
             height={500}
           />
+        </div>
+      )}
+      {post.post.media_type === "audio" && (
+        <div>
+          <audio controls>
+            <source src={post.post.media_temp} type="audio/mp3" />
+            Seu navegador não suporta o elemento de áudio.
+          </audio>
         </div>
       )}
       <div className="flex items-center gap-2 pt-2">
