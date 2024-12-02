@@ -1,12 +1,14 @@
 "use client";
 
-import { UserContext } from "@/context/user-context";
 import Image from "next/image";
 import React from "react";
 
-export default function ProfilePhoto({ src, alt }) {
-  const user = React.useContext(UserContext);
+interface ProfilePhotoProps {
+  src: string;
+  alt: string;
+}
 
+export default function ProfilePhoto({ src, alt }: ProfilePhotoProps) {
   return (
     <div>
       <Image

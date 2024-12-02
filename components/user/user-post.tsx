@@ -5,13 +5,32 @@ import ProfilePhoto from "./profile-photo";
 import Image from "next/image";
 import { UserContext } from "@/context/user-context";
 import getToken from "@/utils/getToken";
+import { FaRegHeart, FaHeart } from "react-icons/fa";
 
-export default function UserPost({ post }) {
-  console.log(post.id);
+interface Post {
+  id: string;
+  user: {
+    id: string;
+    user: string;
+    profile_photo_temp: string;
+  };
+  content: string;
+  media_type: string;
+  media_temp: string;
+  created_at: string;
+}
 
+interface Engagement {
+  type: string;
+  post_id: string;
+  user_id: string;
+}
+
+export default function UserPost({ post }: { post: Post }) {
   const [liked, setLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(0);
   const userData = useContext(UserContext);
-  const userId = userData?.user?.[0]?.id;
+  const userId = userData?.user?.id;
 
   // Buscar engajamentos
   const getEngagements = async () => {
@@ -19,7 +38,7 @@ export default function UserPost({ post }) {
       const userToken = await getToken();
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/me/posts/engagements?post_id=${post.id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/me/posts/engagements?post_id=${post.id}`,
         {
           method: "GET",
           headers: {
@@ -32,11 +51,15 @@ export default function UserPost({ post }) {
       if (res.ok) {
         const engagements = await res.json();
 
-        console.log(engagements);
+        // Conta o número de likes para o post
+        const likes = engagements.response.filter(
+          (engagement: Engagement) => engagement.type === "like"
+        ).length;
+        setLikesCount(likes); // Inicializa o estado com a quantidade de likes
 
         // Verifica se há algum engajamento do tipo "like" para o post
         const userLiked = engagements.response.some(
-          (engagement) =>
+          (engagement: Engagement) =>
             engagement.post_id === post.id && engagement.type === "like"
         );
 
@@ -50,14 +73,14 @@ export default function UserPost({ post }) {
 
   useEffect(() => {
     getEngagements();
-  }, [post.id, userId]); // Dependências: apenas executa quando estas mudam
+  }, [post.id, userId]);
 
   // Formatando horário de postagem
-  const formatDate = (createdAt) => {
+  const formatDate = (createdAt: string) => {
     const postDate = new Date(createdAt);
     const now = new Date();
 
-    const diffInMilliseconds = now - postDate;
+    const diffInMilliseconds = now.getTime() - postDate.getTime();
 
     const seconds = Math.floor(diffInMilliseconds / 1000);
     const minutes = Math.floor(seconds / 60);
@@ -90,7 +113,7 @@ export default function UserPost({ post }) {
     try {
       if (liked) {
         // Descurtir o post
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/post-engagements`, {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/post-engagements`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
@@ -102,9 +125,10 @@ export default function UserPost({ post }) {
             type: "like",
           }),
         });
+        setLikesCount((prev) => prev - 1); // Decrementa a contagem de likes
       } else {
         // Curtir o post
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/post-engagements`, {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/post-engagements`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -116,6 +140,7 @@ export default function UserPost({ post }) {
             type: "like",
           }),
         });
+        setLikesCount((prev) => prev + 1); // Incrementa a contagem de likes
       }
 
       setLiked(!liked);
@@ -140,21 +165,25 @@ export default function UserPost({ post }) {
       </div>
       <div className="pt-2">
         <p>{post.content}</p>
-        <Image
-          src={post.media_temp}
-          alt={post.content}
-          width={300}
-          height={300}
-        />
       </div>
-      <div>
-        <button
-          onClick={handleLike}
-          className={`p-2 ${
-            liked ? "bg-blue-600" : "bg-red-600"
-          } text-white rounded-sm`}
-        >
-          {liked ? "Descurtir" : "Gostei"}
+      {post.media_type === "image" && (
+        <div>
+          <Image
+            src={post.media_temp}
+            alt="Media do post"
+            width={500}
+            height={500}
+          />
+        </div>
+      )}
+      <div className="flex items-center gap-2 pt-2">
+        <button onClick={handleLike} className="flex items-center gap-1">
+          {liked ? (
+            <FaHeart className="text-red-500" />
+          ) : (
+            <FaRegHeart className="text-gray-500" />
+          )}
+          <span>{likesCount}</span>
         </button>
       </div>
     </div>

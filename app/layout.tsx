@@ -37,7 +37,7 @@ export default async function RootLayout({
 
   const fetchUserData = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -52,7 +52,7 @@ export default async function RootLayout({
       const data = await res.json();
 
       return data.response;
-    } catch (err) {
+    } catch {
       return [];
     }
   };

@@ -7,9 +7,22 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
+  if (!token && request.nextUrl.pathname.startsWith("/feed")) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  if (!token && request.nextUrl.pathname.startsWith("/profile")) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/register/:path*", "/login/:path*"],
+  matcher: [
+    "/register/:path*",
+    "/login/:path*",
+    "/feed/:path*",
+    "/profile/:path*",
+  ],
 };

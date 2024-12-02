@@ -3,8 +3,11 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BlurImage } from "../../ui/blur-image";
-import { useRouter } from "next/navigation"; // Usado para redirecionar
+import { useRouter } from "next/navigation";
 import { logo1 } from "../../../public";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 export default function RegisterForm() {
   const [formData, setFormData] = useState({
@@ -30,60 +33,52 @@ export default function RegisterForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    router.push(`/register/step2`);
+    setErro("");
+    setLoading(true);
+
+    if (!termos) {
+      setErro("Você precisa aceitar os termos e condições");
+      setLoading(false);
+      return;
+    }
+
+    if (formData.senha !== formData.confirmarSenha) {
+      setErro("As senhas não correspondem");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.nome,
+          last_name: formData.sobreNome,
+          email: formData.email,
+          user: formData.usuario,
+          password: formData.senha,
+          password_confirmation: formData.confirmarSenha,
+          bio: "",
+          is_private: 0,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.status === "success") {
+        // Redirecionar para a próxima etapa
+        router.push(`/`);
+      } else {
+        setErro(data.message || "Erro ao registrar usuário");
+      }
+    } catch {
+      setErro("Erro ao conectar com o servidor");
+    } finally {
+      setLoading(false);
+    }
   };
-
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setErro("");
-  //   setLoading(true);
-
-  //   if (!termos) {
-  //     setErro("Você precisa aceitar os termos e condições");
-  //     setLoading(false);
-  //     return;
-  //   }
-
-  //   if (formData.senha !== formData.confirmarSenha) {
-  //     setErro("As senhas não correspondem");
-  //     setLoading(false);
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await fetch(
-  //       `${process.env.NEXT_PUBLIC_API_URL}/api/register`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({
-  //           name: formData.nome,
-  //           last_name: formData.sobreNome,
-  //           email: formData.email,
-  //           user: formData.usuario,
-  //           password: formData.senha,
-  //           password_confirmation: formData.confirmarSenha,
-  //           bio: "",
-  //           is_private: 0,
-  //         }),
-  //       }
-  //     );
-
-  //     const data = await response.json();
-  //     if (response.ok && data.status === "success") {
-  //       // Redirecionar para a próxima etapa
-  //       router.push(`/register/step2?userId=${data.response.id}`);
-  //     } else {
-  //       setErro(data.message || "Erro ao registrar usuário");
-  //     }
-  //   } catch (err) {
-  //     setErro("Erro ao conectar com o servidor");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   return (
     <div className="relative z-10 w-full h-full max-w-md p-8 rounded-xl m-auto">
@@ -96,16 +91,6 @@ export default function RegisterForm() {
         Crie sua conta
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <Button
-          type="submit"
-          variant={"default"}
-          className="w-full mt-6"
-          disabled={loading}
-        >
-          {loading ? "Registrando..." : "Registrar"}
-        </Button>
-      </form>
-      {/* <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <Input
             type="text"
@@ -205,7 +190,7 @@ export default function RegisterForm() {
         >
           {loading ? "Registrando..." : "Registrar"}
         </Button>
-      </form> */}
+      </form>
     </div>
   );
 }

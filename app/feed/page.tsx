@@ -4,12 +4,25 @@ import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/context/user-context";
 import getToken from "@/utils/getToken";
 import UserPost from "@/components/user/user-post";
+import CreatePost from "@/components/user/create-post";
+import { redirect } from "next/navigation";
 
 type Post = {
-  id: number;
-  post: {
-    content: string;
-    media_temp: string;
+  id: string;
+  user: {
+    id: string;
+    user: string;
+    profile_photo_temp: string;
+  };
+  content: string;
+  media_type: string;
+  media_temp: string;
+  created_at: string;
+};
+
+type ApiResponse = {
+  response: {
+    data: Post[];
   };
 };
 
@@ -23,23 +36,21 @@ export default function Feed() {
       try {
         const userToken = await getToken();
 
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/me/feed`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${userToken}`,
-            },
-          }
-        );
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/me/feed`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
 
         if (!res.ok) {
           throw new Error("Erro ao retornar posts.");
         }
 
-        const data = await res.json();
+        const data: ApiResponse = await res.json();
 
+        // Usando o tipo `ApiResponse` e mapeando corretamente os dados
         setPosts(data.response.data);
       } catch (err) {
         console.error("Erro ao buscar posts:", err);
@@ -52,9 +63,22 @@ export default function Feed() {
     fetchPosts();
   }, []);
 
+  const handleRedirect = () => {
+    redirect("/profile/" + userData?.user?.user);
+  };
+
   return (
     <div>
-      <h1>Olá {userData?.user?.[0]?.name}</h1>
+      <h1>Olá {userData?.user?.name}</h1>
+      <br />
+      <br />
+      <button onClick={handleRedirect} className="p-2 bg-pink-400 rounded-md">
+        Meu perfil
+      </button>
+      <br />
+      <br />
+      <h1>CRIAR NOVO POST</h1>
+      <CreatePost />
       <br />
       <br />
       <h1>POSTS</h1>
@@ -65,7 +89,7 @@ export default function Feed() {
           {posts.length > 0 ? (
             posts.map((post) => (
               <li key={post.id}>
-                <UserPost post={post.post} />
+                <UserPost post={post} />
               </li>
             ))
           ) : (
