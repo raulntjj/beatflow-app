@@ -6,7 +6,13 @@ import { UserContext } from "@/context/user-context";
 import { Button } from "../ui/button";
 import getToken from "@/utils/getToken";
 import { FileUpload } from "../ui/file-upload";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 import { PlusSquare } from "lucide-react";
 import { toast } from "sonner";
 import { FaCheck } from "react-icons/fa";
@@ -54,7 +60,21 @@ export default function CreatePost() {
     data.append("content", formData.content);
     data.append("visibility", "public");
     data.append("user", userUser || "");
-    data.append("media_type", "audio");
+
+    // Determinar o media_type baseado no arquivo
+    let mediaType = "unknown";
+    if (formData.image) {
+      const fileType = formData.image.type; // Obtém o MIME type do arquivo
+      if (fileType.startsWith("image/")) {
+        mediaType = "image";
+      } else if (fileType.startsWith("audio/")) {
+        mediaType = "audio";
+      } else if (fileType.startsWith("video/")) {
+        mediaType = "video";
+      }
+    }
+
+    data.append("media_type", mediaType);
 
     if (formData.image) {
       data.append("media_path", formData.image);
@@ -101,7 +121,9 @@ export default function CreatePost() {
       </DialogTrigger>
       <DialogContent className="border-zinc-700 bg-background">
         <DialogHeader>
-          <DialogTitle className="text-center">Criar nova publicação</DialogTitle>
+          <DialogTitle className="text-center">
+            Criar nova publicação
+          </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col items-center justify-center">
           <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -116,7 +138,11 @@ export default function CreatePost() {
             />
             <FileUpload onChange={handleFileChange} />
             <div className="w-full flex">
-              <Button type="submit" variant="outline" className="w-[85%] mx-auto mt-6">
+              <Button
+                type="submit"
+                variant="outline"
+                className="w-[85%] mx-auto mt-6"
+              >
                 Postar
               </Button>
             </div>

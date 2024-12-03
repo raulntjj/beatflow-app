@@ -4,7 +4,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/context/user-context";
 import getToken from "@/utils/getToken";
 import UserPost from "@/components/user/user-post";
-import CreatePost from "@/components/user/create-post";
 import { redirect } from "next/navigation";
 
 type Post = {
@@ -70,7 +69,6 @@ export default function Feed() {
   };
 
   return (
-
     <>
       <div className="w-full">
         {/* <h1>Olá {userData?.user?.name}</h1>
