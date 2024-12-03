@@ -2,13 +2,11 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardTitle } from "@/components/ui/card";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { UserContext } from "@/context/user-context";
 import getToken from "@/utils/getToken";
 import Image from "next/image";
-import { Separator } from "../ui/separator";
 
 interface Post {
   id: string;

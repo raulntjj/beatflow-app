@@ -1,14 +1,9 @@
-import { Heart, Home, LogOut, MenuIcon, PlusSquare } from "lucide-react";
+import { Heart, Home } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { HiMiniUserGroup, HiOutlineUserGroup } from "react-icons/hi2";
-import { Button } from "../../ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../../ui/dialog";
-import { FileUpload } from "../../ui/file-upload";
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import {  HiOutlineUserGroup } from "react-icons/hi2";
 import ProfilePhoto from "../../user/profile-photo";
 import CreatePost from "../../user/create-post";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuShortcut, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 import PlusOptions from "../plus-options";
 
 export default function NavbarItems() {
