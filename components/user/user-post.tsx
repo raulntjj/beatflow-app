@@ -1,11 +1,14 @@
 "use client";
 
 import React, { useContext, useEffect, useState } from "react";
-import ProfilePhoto from "./profile-photo";
-import Image from "next/image";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { UserContext } from "@/context/user-context";
 import getToken from "@/utils/getToken";
-import { FaRegHeart, FaHeart } from "react-icons/fa";
+import Image from "next/image";
+import { Separator } from "../ui/separator";
 
 interface Post {
   id: string;
@@ -34,13 +37,10 @@ export default function UserPost({ post }: { post: Post }) {
   const userData = useContext(UserContext);
   const userId = userData?.user?.id;
 
-  console.log(post);
-
-  // Buscar engajamentos
+  // Fetch engagements
   const getEngagements = async () => {
     try {
       const userToken = await getToken();
-
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/me/posts/engagements?post_id=${post.id}`,
         {
@@ -54,24 +54,19 @@ export default function UserPost({ post }: { post: Post }) {
 
       if (res.ok) {
         const engagements = await res.json();
-
-        // Conta o número de likes para o post
         const likes = engagements.response.filter(
           (engagement: Engagement) => engagement.type === "like"
         ).length;
-        setLikesCount(likes); // Inicializa o estado com a quantidade de likes
+        setLikesCount(likes);
 
-        // Verifica se há algum engajamento do tipo "like" para o post
         const userLiked = engagements.response.some(
           (engagement: Engagement) =>
             engagement.post_id === post.id && engagement.type === "like"
         );
-
-        // Atualiza o estado 'liked' com base na verificação
         setLiked(userLiked);
       }
     } catch (error) {
-      console.error("Erro ao buscar engajamentos:", error);
+      console.error("Error fetching engagements:", error);
     }
   };
 
@@ -79,7 +74,6 @@ export default function UserPost({ post }: { post: Post }) {
     getEngagements();
   }, [post.id, userId]);
 
-  // Formatando horário de postagem
   const formatDate = (createdAt: string) => {
     const postDate = new Date(createdAt);
     const now = new Date();
@@ -93,7 +87,7 @@ export default function UserPost({ post }: { post: Post }) {
     const months = Math.floor(days / 30);
     const years = Math.floor(months / 12);
 
-    const rtf = new Intl.RelativeTimeFormat("pt", { numeric: "auto" });
+    const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
 
     if (years > 0) {
       return rtf.format(-years, "year");
@@ -110,13 +104,11 @@ export default function UserPost({ post }: { post: Post }) {
     }
   };
 
-  // Realizar curtida
   const handleLike = async () => {
     const userToken = await getToken();
 
     try {
       if (liked) {
-        // Descurtir o post
         await fetch(`${process.env.NEXT_PUBLIC_API_URL}/post-engagements`, {
           method: "DELETE",
           headers: {
@@ -129,9 +121,8 @@ export default function UserPost({ post }: { post: Post }) {
             type: "like",
           }),
         });
-        setLikesCount((prev) => prev - 1); // Decrementa a contagem de likes
+        setLikesCount((prev) => prev - 1);
       } else {
-        // Curtir o post
         await fetch(`${process.env.NEXT_PUBLIC_API_URL}/post-engagements`, {
           method: "POST",
           headers: {
@@ -144,59 +135,84 @@ export default function UserPost({ post }: { post: Post }) {
             type: "like",
           }),
         });
-        setLikesCount((prev) => prev + 1); // Incrementa a contagem de likes
+        setLikesCount((prev) => prev + 1);
       }
-
       setLiked(!liked);
     } catch (error) {
-      console.error("Erro ao realizar a requisição", error);
+      console.error("Error toggling like:", error);
     }
   };
 
+  console.log(post.post.media_temp)
+  
   return (
-    <div className="w-[700px]">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <ProfilePhoto
-            src={post.post.user.profile_photo_temp}
-            alt={post.post.user.user}
-          />
-          <span>{post.post.user.user}</span>
-        </div>
-        <div>
-          <span>{formatDate(post.post.created_at)}</span>
+    <div className="w-full mx-auto shadow-none border-0 rounded-none bg-background ">
+      <div className="p-0">
+        <div className="flex items-center justify-between text-foreground">
+          <div className="flex items-center gap-3">
+            <Avatar>
+              <AvatarImage src={post.post.user.profile_photo_temp} />
+              <AvatarFallback>
+                {post.post.user.user.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <CardTitle className="text-sm font-medium">
+              {post.post.user.user}
+            </CardTitle>
+          </div>
+          <span className="text-xs text-gray-500">
+            {formatDate(post.post.created_at)}
+          </span>
         </div>
       </div>
-      <div className="pt-2">
-        <p>{post.post.content}</p>
-      </div>
-      {post.post.media_type === "image" && (
+      <div className="ml-[19px] pl-5 pb-10 mt-1 border-l-[2px] border-zinc-700">
         <div>
-          <Image
-            src={post.post.media_temp}
-            alt="Media do post"
-            width={500}
-            height={500}
-          />
+          <div className="text-foreground">
+            {post.post.media_type === "image" && (
+              <Image
+                src={post.post.media_temp}
+                alt="Post media"
+                className="rounded-lg"
+                width={1440}
+                height={1800}
+              />
+            )}
+            {post.post.media_type === "audio" && (
+              <audio controls className="mt-4 w-full">
+                <source src={post.post.media_temp} type="audio/mp3" />
+                Your browser does not support the audio element.
+              </audio>
+            )}
+
+          </div>
+          <div className="flex items-center gap-3 my-4">
+            <div
+              onClick={handleLike}
+              className="flex items-center gap-2 !no-underline"
+            >
+              {liked ? (
+                <FaHeart className="text-red-500 w-6 h-6 cursor-pointer" />
+              ) : (
+                <FaRegHeart className="text-foreground w-6 h-6 cursor-pointer" />
+              )}
+              <span className="text-sm font-medium text-gray-500">{likesCount} curtidas</span>
+            </div>
+          </div>
+          <CardContent className="p-0">
+            <div className="mb-4">
+              <div className="inline-block mr-1">
+                <div className="inline">
+                  <span className="m-0">
+                    {post.post.user.user}
+                  </span>
+                </div>
+              </div>
+              <span>
+                {post.post.content}
+              </span>
+            </div>
+          </CardContent>
         </div>
-      )}
-      {post.post.media_type === "audio" && (
-        <div>
-          <audio controls>
-            <source src={post.post.media_temp} type="audio/mp3" />
-            Seu navegador não suporta o elemento de áudio.
-          </audio>
-        </div>
-      )}
-      <div className="flex items-center gap-2 pt-2">
-        <button onClick={handleLike} className="flex items-center gap-1">
-          {liked ? (
-            <FaHeart className="text-red-500" />
-          ) : (
-            <FaRegHeart className="text-gray-500" />
-          )}
-          <span>{likesCount}</span>
-        </button>
       </div>
     </div>
   );

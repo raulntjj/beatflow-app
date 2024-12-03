@@ -78,10 +78,9 @@ export default function FeedLayout({
                 <div className="hidden md:block">
                   <SearchUsers users={users} />
                 </div>
-                <div className="container mx-auto mt-[70px] tablet:mt-6 p-4">{children}</div>
+                <div className="container mx-auto mt-[70px] tablet:mt-0 p-4">{children}</div>
               </div>
             </div>
-
             {/* Perfil */}
             <ProfileNavbar />
           </div>

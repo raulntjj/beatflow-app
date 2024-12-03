@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState, useRef, useEffect } from "react";
 import { AiOutlineSearch } from "react-icons/ai"; 
 import { UserAvatar } from "../user/user-avatar";
