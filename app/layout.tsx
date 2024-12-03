@@ -5,6 +5,7 @@ import { description, projectName } from "../utils/constants";
 import "./globals.css";
 import { cookies } from "next/headers";
 import { UserContextProvider } from "@/context/user-context";
+import { Toaster } from "../components/ui/sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -65,6 +66,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${inter.className} antialiased bg-background`}
       >
         <UserContextProvider user={user}>{children}</UserContextProvider>
+        <Toaster />
       </body>
     </html>
   );

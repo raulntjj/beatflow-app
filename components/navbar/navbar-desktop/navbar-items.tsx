@@ -1,12 +1,15 @@
-import { Heart, Home, MenuIcon, PlusSquare } from "lucide-react";
+import { Heart, Home, LogOut, MenuIcon, PlusSquare } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { HiMiniUserGroup } from "react-icons/hi2";
+import { HiMiniUserGroup, HiOutlineUserGroup } from "react-icons/hi2";
 import { Button } from "../../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../../ui/dialog";
 import { FileUpload } from "../../ui/file-upload";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import ProfilePhoto from "../../user/profile-photo";
+import CreatePost from "../../user/create-post";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuShortcut, DropdownMenuTrigger } from "../../ui/dropdown-menu";
+import PlusOptions from "../plus-options";
 
 export default function NavbarItems() {
 
@@ -18,7 +21,7 @@ export default function NavbarItems() {
 
   const navbarItems = [
     { icon: Home, label: 'Página inicial', href:"/" , key: 'home'  },
-    { icon: HiMiniUserGroup, label:'Colabbs', href:"/", key: 'colabbs' },
+    { icon: HiOutlineUserGroup, label:'Projetos', href:"/", key: 'projects' },
     { icon: Heart, label: 'Notificações', href:"/", key: 'notifications' },
   ];
 
@@ -40,23 +43,7 @@ export default function NavbarItems() {
             </span>
           </Link>
         ))}
-
-        <Dialog>
-          <DialogTrigger className="flex w-full justify-center tablet:justify-start items-center">
-            <PlusSquare className="tablet:mr-3 h-7 w-7" />
-            <span className="hidden tablet:block">
-              Criar
-            </span>
-          </DialogTrigger>
-          <DialogContent className="border-zinc-700">
-            <DialogHeader>
-              <DialogTitle className="text-center">Criar nova publicação</DialogTitle>
-            </DialogHeader>
-            <div>
-              <FileUpload onChange={handleFileUpload} />
-            </div>
-          </DialogContent>
-        </Dialog>
+        <CreatePost />
         <Link href={`/profile/{user}`} className="flex w-full justify-center tablet:justify-start items-center" >
           <ProfilePhoto src="" alt="" className="tablet:mr-3" />
           <span className="hidden tablet:block">
@@ -64,24 +51,7 @@ export default function NavbarItems() {
           </span>
         </Link>
       </div>
-
-      <Popover>
-        <PopoverTrigger asChild>
-          <button className="flex w-full justify-center tablet:justify-start items-center">
-            <MenuIcon className="tablet:mr-3 h-7 w-7" />
-            <span className="hidden tablet:block">
-              Mais
-            </span>
-          </button>
-        </PopoverTrigger>
-        <PopoverContent className="max-w-[200px] bg-zinc-800 border-zinc-700 p-2">
-          <div className="flex justify-center items-center gap-4">
-            <Button variant={"ghost"} className="w-full"> 
-              Sair
-            </Button>
-          </div>
-        </PopoverContent>
-      </Popover>
+      <PlusOptions />
     </nav>
   )
 }

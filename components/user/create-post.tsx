@@ -5,6 +5,11 @@ import { Input } from "../ui/input";
 import { UserContext } from "@/context/user-context";
 import { Button } from "../ui/button";
 import getToken from "@/utils/getToken";
+import { FileUpload } from "../ui/file-upload";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { PlusSquare } from "lucide-react";
+import { toast } from "sonner";
+import { FaCheck } from "react-icons/fa";
 
 export default function CreatePost() {
   const userData = useContext(UserContext);
@@ -16,18 +21,22 @@ export default function CreatePost() {
     image: null as File | null, // Altere para aceitar um arquivo
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, files } = e.target;
+  const [isDialogOpen, setIsDialogOpen] = useState(false); // Controla a visibilidade do dialog
 
-    if (name === "image" && files && files[0]) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleFileChange = (files: File[]) => {
+    if (files.length > 0) {
       setFormData((prev) => ({
         ...prev,
-        image: files[0], // Adiciona o arquivo
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
+        image: files[0], // Adiciona o primeiro arquivo selecionado
       }));
     }
   };
@@ -41,19 +50,15 @@ export default function CreatePost() {
     }
 
     const data = new FormData();
-    data.append("user_id", userId.toString()); // Ensure userId is a string
+    data.append("user_id", userId.toString());
     data.append("content", formData.content);
     data.append("visibility", "public");
-    data.append("user", userUser || ""); // Fallback to an empty string if userUser is undefined
+    data.append("user", userUser || "");
     data.append("media_type", "audio");
 
     if (formData.image) {
       data.append("media_path", formData.image);
     }
-
-    data.forEach((value, key) => {
-      console.log(`${key}:`, value);
-    });
 
     try {
       const userToken = await getToken();
@@ -67,40 +72,57 @@ export default function CreatePost() {
       });
 
       const response = await res.json();
-      console.log(response);
 
       if (res.ok) {
         console.log("Post criado com sucesso!");
+        toast("Postagem criada com sucesso!", {
+          action: {
+            label: <FaCheck className="text-green-600 h-5 w-5" />,
+            onClick: () => {},
+          },
+        });
+        setIsDialogOpen(false); // Fecha o dialog
+        setFormData({ content: "", image: null }); // Reseta o formulário
       } else {
         console.error("Erro ao criar o post:", response);
+        toast.error("Erro ao criar a postagem.");
       }
     } catch (err) {
       console.error("Erro na requisição:", err);
+      toast.error("Erro na requisição.");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} encType="multipart/form-data" >
-      <Input
-        type="text"
-        name="content"
-        value={formData.content}
-        onChange={handleChange}
-        placeholder="Conteúdo"
-        className="mt-2 bg-zinc-800 border-zinc-700 text-white focus:ring-blue-500"
-        required
-      />
-      <Input
-        type="file"
-        name="image"
-        onChange={handleChange}
-        placeholder="Imagem"
-        className="mt-2 bg-zinc-800 border-zinc-700 text-white focus:ring-blue-500"
-        required
-      />
-      <Button type="submit" variant={"default"} className="w-full mt-6">
-        Postar
-      </Button>
-    </form>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DialogTrigger className="flex w-full justify-center tablet:justify-start items-center">
+        <PlusSquare className="tablet:mr-3 h-7 w-7" />
+        <span className="hidden tablet:block">Criar</span>
+      </DialogTrigger>
+      <DialogContent className="border-zinc-700 bg-background">
+        <DialogHeader>
+          <DialogTitle className="text-center">Criar nova publicação</DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col items-center justify-center">
+          <form onSubmit={handleSubmit} encType="multipart/form-data">
+            <Input
+              type="text"
+              name="content"
+              value={formData.content}
+              onChange={handleChange}
+              placeholder="Conteúdo"
+              className="mt-2 bg-zinc-800 border-zinc-700 text-white focus:ring-blue-500"
+              required
+            />
+            <FileUpload onChange={handleFileChange} />
+            <div className="w-full flex">
+              <Button type="submit" variant="outline" className="w-[85%] mx-auto mt-6">
+                Postar
+              </Button>
+            </div>
+          </form>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
