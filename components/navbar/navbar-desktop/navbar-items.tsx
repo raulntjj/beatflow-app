@@ -1,4 +1,4 @@
-import { Heart, Home } from "lucide-react";
+import { Heart, HeartCrack, HeartIcon, Home } from "lucide-react";
 import Link from "next/link";
 import { useContext, useState } from "react";
 import { HiOutlineUserGroup } from "react-icons/hi2";
@@ -7,6 +7,7 @@ import CreatePost from "../../user/create-post";
 import PlusOptions from "../plus-options";
 import { UserContext } from "@/context/user-context";
 import { Button } from "../../ui/button";
+import { FaHeart } from "react-icons/fa";
 
 interface NavbarItemsProps {
   isOpen: boolean;
@@ -14,13 +15,11 @@ interface NavbarItemsProps {
 }
 
 export default function NavbarItems({ isOpen, setIsOpen }: NavbarItemsProps) {
-
   const userData = useContext(UserContext);
 
   const navbarItems = [
     { icon: Home, label: "Página inicial", href: "/", key: "home" },
     { icon: HiOutlineUserGroup, label: "Projetos", href: "projects", key: "projects" },
-    { icon: Heart, label: "Notificações", href: "notifications", key: "notifications" },
   ];
 
   const [activeTab, setActiveTab] = useState("home");
@@ -41,21 +40,16 @@ export default function NavbarItems({ isOpen, setIsOpen }: NavbarItemsProps) {
             <span className="hidden tablet:block">{item.label}</span>
           </Link>
         ))}
-        <button className="flex w-full justify-center tablet:justify-start items-center">
-          <Heart className="tablet:mr-3 h-7 w-7" />
-          <span className="hidden tablet:block">
-            Notificações
-          </span>
+        <button className="flex w-full justify-center tablet:justify-start items-center" onClick={() => setIsOpen(!isOpen)}>
+        {isOpen ?  <FaHeart className="tablet:mr-3 h-7 w-7" /> : <Heart className="tablet:mr-3 h-7 w-7" />} 
+          <span className="hidden tablet:block">Notificações</span>
         </button>
-        <Button className="relative z-10" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? 'Fechar' : 'Abrir Menu'}
-        </Button>
         <CreatePost />
         <Link
           href={`/profile/` + userData?.user?.user}
           className="flex w-full justify-center tablet:justify-start items-center"
         >
-          <ProfilePhoto 
+          <ProfilePhoto
             src={userData?.user?.profile_photo_temp}
             alt={userData?.user?.name}
             className="tablet:mr-3"
