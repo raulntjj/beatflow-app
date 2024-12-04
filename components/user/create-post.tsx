@@ -94,7 +94,6 @@ export default function CreatePost() {
       const response = await res.json();
 
       if (res.ok) {
-        console.log("Post criado com sucesso!");
         toast("Postagem criada com sucesso!", {
           action: {
             label: <FaCheck className="text-green-600 h-5 w-5" />,

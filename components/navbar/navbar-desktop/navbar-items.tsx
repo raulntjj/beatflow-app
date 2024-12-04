@@ -29,7 +29,6 @@ export default function NavbarItems() {
   const [files, setFiles] = useState<File[]>([]); // eslint-disable-line @typescript-eslint/no-unused-vars
   const handleFileUpload = (files: File[]) => {
     setFiles(files);
-    console.log(files);
   };
 
   const userData = useContext(UserContext);

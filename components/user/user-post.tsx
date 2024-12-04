@@ -143,8 +143,6 @@ export default function UserPost({ post }: { post: Post }) {
     }
   };
 
-  console.log(post.post.media_temp)
-  
   return (
     <div className="w-full mx-auto shadow-none border-0 rounded-none bg-background ">
       <div className="p-0">
@@ -180,13 +178,12 @@ export default function UserPost({ post }: { post: Post }) {
             {post.post.media_type === "audio" && (
               <audio controls className="mt-4 w-full">
                 <source src={post.post.media_temp} type="audio/mp3" />
-                Your browser does not support the audio element.
+                Seu navegador não suporta esse audio.
               </audio>
             )}
-
           </div>
           <div className="flex items-center gap-3 my-4">
-            <div
+            <button
               onClick={handleLike}
               className="flex items-center gap-2 !no-underline"
             >
@@ -195,21 +192,19 @@ export default function UserPost({ post }: { post: Post }) {
               ) : (
                 <FaRegHeart className="text-foreground w-6 h-6 cursor-pointer" />
               )}
-              <span className="text-sm font-medium text-gray-500">{likesCount} curtidas</span>
-            </div>
+              <span className="text-sm font-medium text-gray-500">
+                {likesCount} curtidas
+              </span>
+            </button>
           </div>
           <CardContent className="p-0">
             <div className="mb-4">
               <div className="inline-block mr-1">
                 <div className="inline">
-                  <span className="m-0">
-                    {post.post.user.user}
-                  </span>
+                  <span className="m-0">{post.post.user.user}</span>
                 </div>
               </div>
-              <span>
-                {post.post.content}
-              </span>
+              <span>{post.post.content}</span>
             </div>
           </CardContent>
         </div>
