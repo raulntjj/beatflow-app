@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserContext } from "@/context/user-context";
 import getToken from "@/utils/getToken";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
+import { PiBroomFill } from "react-icons/pi";
 import { Button } from "../../components/ui/button";
 import { ScrollArea } from "../../components/ui/scroll-area";
-import { PiBroomFill } from "react-icons/pi";
-import Link from "next/link";
-import { usePathname } from "next/navigation"; 
-import { ChevronLeft } from "lucide-react";
 
 export default function Notifications() {
   const pathname = usePathname(); 

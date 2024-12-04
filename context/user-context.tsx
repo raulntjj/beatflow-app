@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 
 type User = {
@@ -10,7 +9,6 @@ type User = {
   profile_photo_temp: string;
   user: string;
 };
-
 
 type IUserContext = {
   user: User | null;
@@ -26,7 +24,7 @@ export const UserContext = React.createContext<IUserContext | null>(null);
 export const useUser = () => {
   const context = React.useContext(UserContext);
   if (context === null) {
-    throw new Error("useContext deve estar dentro do Provider");
+    throw new Error("useContext must be within the Provider");
   }
   return context;
 };
@@ -41,14 +39,16 @@ export function UserContextProvider({
   const [userState, setUser] = React.useState<User | null>(user);
 
   return (
-    <UserContext.Provider value={{ 
-      user: userState, 
-      setUser, 
-      id: userState?.id.toString() || '', 
-      name: userState?.name || '', 
-      email: userState?.email || '', 
-      profilePhoto: userState?.profile_photo_temp || '' 
-    }}>
+    <UserContext.Provider
+      value={{
+        user: userState,
+        setUser,
+        id: userState?.id?.toString() || '',
+        name: userState?.name || '',
+        email: userState?.email || '',
+        profilePhoto: userState?.profile_photo_temp || '',
+      }}
+    >
       {children}
     </UserContext.Provider>
   );
