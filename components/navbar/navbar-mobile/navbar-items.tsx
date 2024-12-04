@@ -8,6 +8,8 @@ import PlusOptions from '../plus-options';
 import { useContext, useState } from 'react';
 import { UserContext } from "@/context/user-context";
 import { GoHome, GoHomeFill } from 'react-icons/go';
+import { usePathname } from 'next/navigation';
+import CreateProjects from '../../user/create-projects';
 
 export default function NavbarMobileItems() {
 
@@ -17,9 +19,8 @@ export default function NavbarMobileItems() {
   const handleFileUpload = (files: File[]) => {
     setFiles(files);
   };
-
-  const [activeTab, setActiveTab] = useState("home");
-
+  
+  const pathname = usePathname(); 
 
   return (
     <div className="fixed md:hidden z-10 inset-x-0 bottom-0 bg-background border-t-[2px] border-zinc-700 flex justify-around py-3">
@@ -27,9 +28,8 @@ export default function NavbarMobileItems() {
         key={'home'}
         href={`/`}
         className={`flex w-full justify-center tablet:justify-start items-center`}
-        onClick={() => setActiveTab("home")}
       >
-        { activeTab === "home" ? <GoHomeFill className="tablet:mr-3 h-7 w-7" /> : <GoHome className="tablet:mr-3 h-7 w-7" />}
+        { pathname === "/feed" ? <GoHomeFill className="tablet:mr-3 h-7 w-7" /> : <GoHome className="tablet:mr-3 h-7 w-7" />}
         
         <span className="hidden tablet:block">Página inicial</span>
       </Link>
@@ -37,13 +37,13 @@ export default function NavbarMobileItems() {
         key={'projects'}
         href={`/projects`}
         className={`flex w-full justify-center tablet:justify-start items-center`}
-        onClick={() => setActiveTab("projects")}
       >
-        { activeTab === "projects" ? <HiUserGroup className="tablet:mr-3 h-7 w-7" /> : <HiOutlineUserGroup className="tablet:mr-3 h-7 w-7" />}
+        { pathname === "/projects" ? <HiUserGroup className="tablet:mr-3 h-7 w-7" /> : <HiOutlineUserGroup className="tablet:mr-3 h-7 w-7" />}
         
         <span className="hidden tablet:block">Projetos</span>
       </Link>
       <CreatePost />
+      <CreateProjects />
       <Link
         href={`/profile/{user}`}
         className="flex w-full justify-center tablet:justify-start items-center"

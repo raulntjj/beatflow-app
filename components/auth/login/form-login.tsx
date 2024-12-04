@@ -72,7 +72,7 @@ export default function LoginForm() {
           </Link>
         </div>
 
-        <Button variant={"outline"} className="w-full mt-4">
+        <Button variant={"secondary"} className="w-full mt-4">
           Login
         </Button>
 

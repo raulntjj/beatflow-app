@@ -81,7 +81,7 @@ export const FileUpload = ({
                     "shadow-sm"
                   )}
                 >
-                  <div className="flex justify-between w-full items-center gap-4">
+                  <div className="flex justify-between w-full items-center max-w-[200px] gap-4">
                     <motion.p
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}

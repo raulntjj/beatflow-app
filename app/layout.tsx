@@ -9,9 +9,9 @@ import { description, projectName } from "../utils/constants";
 import NavbarDesktop from "../components/navbar/navbar-desktop";
 import NavbarMobile from "../components/navbar/navbar-mobile";
 import { ScrollArea } from "../components/ui/scroll-area";
-import SearchUsers from "../components/navbar/search-users";
 import ProfileNavbar from "../components/navbar/navbar-desktop/navbar-profile";
 import { Toaster } from "../components/ui/sonner";
+import SearchUsers from "../components/navbar/search-users";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -39,6 +39,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   const cookieStore = await cookies();
   const userToken = cookieStore.get("token")?.value;
 
