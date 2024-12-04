@@ -6,8 +6,14 @@ import ProfilePhoto from "../../user/profile-photo";
 import CreatePost from "../../user/create-post";
 import PlusOptions from "../plus-options";
 import { UserContext } from "@/context/user-context";
+import { Button } from "../../ui/button";
 
-export default function NavbarItems() {
+interface NavbarItemsProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
+
+export default function NavbarItems({ isOpen, setIsOpen }: NavbarItemsProps) {
 
   const userData = useContext(UserContext);
 
@@ -35,6 +41,15 @@ export default function NavbarItems() {
             <span className="hidden tablet:block">{item.label}</span>
           </Link>
         ))}
+        <button className="flex w-full justify-center tablet:justify-start items-center">
+          <Heart className="tablet:mr-3 h-7 w-7" />
+          <span className="hidden tablet:block">
+            Notificações
+          </span>
+        </button>
+        <Button className="relative z-10" onClick={() => setIsOpen(!isOpen)}>
+          {isOpen ? 'Fechar' : 'Abrir Menu'}
+        </Button>
         <CreatePost />
         <Link
           href={`/profile/` + userData?.user?.user}
