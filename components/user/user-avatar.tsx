@@ -1,37 +1,31 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { UserContext } from "@/context/user-context";
+import { useContext } from "react";
 
-export const UserAvatar = ({
-  src,
-  alt = "Avatar",
-  fallbackText = "AA",
-  username = "usuario",
-  fullName = "Nome Completo",
-  hasStory = false,
-}: {
-  src?: string;
-  alt?: string;
-  fallbackText?: string;
-  username?: string;
-  fullName?: string;
-  hasStory?: boolean;
-}) => {
+export const UserAvatar = () => {
+  const userData = useContext(UserContext);
   return (
     <div className="w-fit flex flex-row items-center justify-center space-x-2">
-      <div
-        className={`relative flex items-center justify-center w-16 h-16 ${
-          hasStory
-            ? "p-[2px] bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500 rounded-full"
-            : ""
-        }`}
-      >
-        <Avatar className="w-12 h-12 rounded-full bg-background">
-          <AvatarImage src={src} alt={alt} />
-          <AvatarFallback>{fallbackText}</AvatarFallback>
-        </Avatar>
+      <div className={`relative flex items-center justify-center w-16 h-16`}>
+        <a href={`/profile/${userData?.user?.user}`} className="cursor-pointer">
+          <Avatar className="w-12 h-12 rounded-full bg-background">
+            <AvatarImage
+              src={userData?.user?.profile_photo_temp}
+              alt={userData?.user?.name}
+            />
+            <AvatarFallback>{userData?.user?.profile_photo_temp}</AvatarFallback>
+          </Avatar>
+        </a>
       </div>
       <div className="text-left space-y-1">
-        <span className="block text-sm font-semibold text-foreground">{username}</span>
-        <span className="block text-xs text-foreground/70">{fullName}</span>
+        <a href={`/profile/${userData?.user?.user}`} className="cursor-pointer">
+          <span className="block text-sm font-semibold text-foreground">
+            {userData?.user?.user}
+          </span>
+        </a>
+        <span className="block text-xs text-foreground/70">
+          {userData?.user?.name} {userData?.user?.last_name}
+        </span>
       </div>
     </div>
   );

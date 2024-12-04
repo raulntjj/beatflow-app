@@ -21,7 +21,7 @@ export default function LoginForm() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        email: formData.get("email"),
+        identifier: formData.get("identifier"),
         password: formData.get("password"),
       }),
     });
@@ -33,7 +33,7 @@ export default function LoginForm() {
       router.push("/feed");
     } else {
       redirect("/login");
-    }
+    }
   };
 
   return (
@@ -48,10 +48,10 @@ export default function LoginForm() {
         <div>
           <Input
             type="text"
-            id="email"
-            placeholder="Email"
+            id="identifier"
+            placeholder="Usuário ou e-mail"
             className="w-full"
-            name="email"
+            name="identifier"
           />
         </div>
 
@@ -72,7 +72,7 @@ export default function LoginForm() {
           </Link>
         </div>
 
-        <Button variant={"default"} className="w-full mt-4">
+        <Button variant={"outline"} className="w-full mt-4">
           Login
         </Button>
 

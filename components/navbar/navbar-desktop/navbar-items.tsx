@@ -1,87 +1,69 @@
-import { Heart, Home, MenuIcon, PlusSquare } from "lucide-react";
+import { Heart, Home } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
-import { HiMiniUserGroup } from "react-icons/hi2";
-import { Button } from "../../ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../../ui/dialog";
-import { FileUpload } from "../../ui/file-upload";
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { useContext, useState } from "react";
+import { HiOutlineUserGroup } from "react-icons/hi2";
 import ProfilePhoto from "../../user/profile-photo";
+import CreatePost from "../../user/create-post";
+import PlusOptions from "../plus-options";
+import { UserContext } from "@/context/user-context";
+import { Button } from "../../ui/button";
 
-export default function NavbarItems() {
+interface NavbarItemsProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
 
-  const [files, setFiles] = useState<File[]>([]);// eslint-disable-line @typescript-eslint/no-unused-vars
-  const handleFileUpload = (files: File[]) => {
-    setFiles(files);
-    console.log(files);
-  };
+export default function NavbarItems({ isOpen, setIsOpen }: NavbarItemsProps) {
+
+  const userData = useContext(UserContext);
 
   const navbarItems = [
-    { icon: Home, label: 'Página inicial', href:"/" , key: 'home'  },
-    { icon: HiMiniUserGroup, label:'Colabbs', href:"/", key: 'colabbs' },
-    { icon: Heart, label: 'Notificações', href:"/", key: 'notifications' },
+    { icon: Home, label: "Página inicial", href: "/", key: "home" },
+    { icon: HiOutlineUserGroup, label: "Projetos", href: "projects", key: "projects" },
+    { icon: Heart, label: "Notificações", href: "notifications", key: "notifications" },
   ];
 
-  const [activeTab, setActiveTab] = useState('home');
+  const [activeTab, setActiveTab] = useState("home");
 
   return (
     <nav className="h-full w-full flex flex-col justify-between space-y-7">
       <div className="flex flex-col space-y-7">
         {navbarItems.map((item) => (
-          <Link 
-            key={item.key} 
+          <Link
+            key={item.key}
             href={`/${item.href}`}
-            className={`flex w-full justify-center tablet:justify-start items-center ${activeTab === item.key ? 'secondary' : 'ghost'}`}
+            className={`flex w-full justify-center tablet:justify-start items-center ${
+              activeTab === item.key ? "secondary" : "ghost"
+            }`}
             onClick={() => setActiveTab(item.key)}
           >
             <item.icon className="tablet:mr-3 h-7 w-7" />
-            <span className="hidden tablet:block">
-              {item.label}
-            </span>
+            <span className="hidden tablet:block">{item.label}</span>
           </Link>
         ))}
-
-        <Dialog>
-          <DialogTrigger className="flex w-full justify-center tablet:justify-start items-center">
-            <PlusSquare className="tablet:mr-3 h-7 w-7" />
-            <span className="hidden tablet:block">
-              Criar
-            </span>
-          </DialogTrigger>
-          <DialogContent className="border-zinc-700">
-            <DialogHeader>
-              <DialogTitle className="text-center">Criar nova publicação</DialogTitle>
-            </DialogHeader>
-            <div>
-              <FileUpload onChange={handleFileUpload} />
-            </div>
-          </DialogContent>
-        </Dialog>
-        <Link href={`/profile/{user}`} className="flex w-full justify-center tablet:justify-start items-center" >
-          <ProfilePhoto src="" alt="" className="tablet:mr-3" />
+        <button className="flex w-full justify-center tablet:justify-start items-center">
+          <Heart className="tablet:mr-3 h-7 w-7" />
           <span className="hidden tablet:block">
-            Perfil
+            Notificações
           </span>
+        </button>
+        <Button className="relative z-10" onClick={() => setIsOpen(!isOpen)}>
+          {isOpen ? 'Fechar' : 'Abrir Menu'}
+        </Button>
+        <CreatePost />
+        <Link
+          href={`/profile/` + userData?.user?.user}
+          className="flex w-full justify-center tablet:justify-start items-center"
+        >
+          <ProfilePhoto 
+            src={userData?.user?.profile_photo_temp}
+            alt={userData?.user?.name}
+            className="tablet:mr-3"
+          />
+          <span className="hidden tablet:block">Perfil</span>
         </Link>
       </div>
-
-      <Popover>
-        <PopoverTrigger asChild>
-          <button className="flex w-full justify-center tablet:justify-start items-center">
-            <MenuIcon className="tablet:mr-3 h-7 w-7" />
-            <span className="hidden tablet:block">
-              Mais
-            </span>
-          </button>
-        </PopoverTrigger>
-        <PopoverContent className="max-w-[200px] bg-zinc-800 border-zinc-700 p-2">
-          <div className="flex justify-center items-center gap-4">
-            <Button variant={"ghost"} className="w-full"> 
-              Sair
-            </Button>
-          </div>
-        </PopoverContent>
-      </Popover>
+      <PlusOptions />
     </nav>
-  )
+  );
 }

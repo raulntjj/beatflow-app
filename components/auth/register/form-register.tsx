@@ -8,6 +8,8 @@ import { logo1 } from "../../../public";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { FaCheckCircle } from "react-icons/fa";
 
 export default function RegisterForm() {
   const [formData, setFormData] = useState({
@@ -68,8 +70,22 @@ export default function RegisterForm() {
 
       const data = await res.json();
       if (res.ok && data.status === "success") {
+        // Exibir toast de confirmação
+        toast.success(
+          "Registro concluído com sucesso!",
+          {
+            description: "Bem-vindo(a) ao nosso sistema!",
+            action: {
+              label: <FaCheckCircle className="text-green-600 h-5 w-5" />,
+              onClick: () => console.log("Toast confirmado"),
+            },
+          }
+        );
+
         // Redirecionar para a próxima etapa
-        router.push(`/`);
+        setTimeout(() => {
+          router.push(`/`);
+        }, 2000); // Aguarda 2 segundos antes de redirecionar
       } else {
         setErro(data.message || "Erro ao registrar usuário");
       }

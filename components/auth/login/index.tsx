@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { vector1, vector2, vector3, vector4, vector5, vector6, vector7 } from "@/public";
-import LoginForm from "./LoginForm";
 import { motion } from 'framer-motion';
+import LoginForm from "./form-login";
 
 export default function LoginHome() {
   return (

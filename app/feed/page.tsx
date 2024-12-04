@@ -4,7 +4,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/context/user-context";
 import getToken from "@/utils/getToken";
 import UserPost from "@/components/user/user-post";
-import CreatePost from "@/components/user/create-post";
 import { redirect } from "next/navigation";
 
 type Post = {
@@ -70,35 +69,30 @@ export default function Feed() {
   };
 
   return (
-    <div className="w-full">
-      <h1>Olá {userData?.user?.name}</h1>
-      <br />
-      <br />
-      <button onClick={handleRedirect} className="p-2 bg-pink-400 rounded-md">
-        Meu perfil
-      </button>
-      <br />
-      <br />
-      <h1>CRIAR NOVO POST</h1>
-      <CreatePost />
-      <br />
-      <br />
-      <h1>POSTS</h1>
-      {loading ? (
-        <p>Carregando posts...</p>
-      ) : (
-        <ul>
-          {posts.length > 0 ? (
-            posts.map((post) => (
-              <li key={post.id}>
-                <UserPost post={post} />
-              </li>
-            ))
-          ) : (
-            <p>Siga uma pessoa para que comecem a aparecer posts.</p>
-          )}
-        </ul>
-      )}
-    </div>
+    <>
+      <div className="w-full">
+        {/* <h1>Olá {userData?.user?.name}</h1>
+        <br />
+        <br /> */}
+        {/* <button onClick={handleRedirect} className="p-2 bg-primary text-background rounded-md">
+          Meu perfil
+        </button> */}
+        {loading ? (
+          <p>Carregando posts...</p>
+        ) : (
+          <div className="relative flex flex-col space-y-10">
+            {posts.length > 0 ? (
+              posts.map((post) => (
+                <article key={post.id} className="w-full">
+                  <UserPost post={post} />
+                </article>
+              ))
+            ) : (
+              <p>Nenhuma postagem.</p>
+            )}
+          </div>
+        )}
+      </div>
+    </>
   );
 }

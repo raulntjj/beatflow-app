@@ -1,8 +1,11 @@
+"use client";
+
 import React, { useState, useRef, useEffect } from "react";
-import { AiOutlineSearch } from "react-icons/ai"; 
-import { UserAvatar } from "../user/user-avatar";
-import { Input } from "@/components/ui/input"; 
-import { ScrollArea } from "@/components/ui/scroll-area"; 
+import { AiOutlineSearch } from "react-icons/ai";
+import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import getToken from "@/utils/getToken";
 
 interface User {
   id: number;
@@ -11,31 +14,59 @@ interface User {
   avatarSrc?: string;
 }
 
-interface SearchUsersProps {
-  users: User[];
-}
-
-export default function SearchUsers({ users }: SearchUsersProps) {
+export default function SearchUsers() {
   const [query, setQuery] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setQuery(value);
 
     if (value.trim() === "") {
       setFilteredUsers([]);
-    } else {
-      const results = users.filter((user) =>
-        user.name.toLowerCase().includes(value.toLowerCase()) ||
-        user.username.toLowerCase().includes(value.toLowerCase())
-      );
-      setFilteredUsers(results);
+      setIsDropdownVisible(false);
+      return;
     }
 
-    setIsDropdownVisible(true);
+    setIsLoading(true);
+
+    try {
+      const userToken = await getToken();
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users?search=${value}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Erro ao buscar usuários");
+      }
+
+      const responseData = await res.json();
+      const usersData = responseData.response.data.map((user: any) => ({
+        id: user.id,
+        name: user.name,
+        username: user.user,
+        avatarSrc: user.profile_photo_temp,
+      }));
+
+      setFilteredUsers(usersData);
+    } catch (error) {
+      console.error("Erro na busca de usuários:", error);
+      setFilteredUsers([]);
+    } finally {
+      setIsLoading(false);
+      setIsDropdownVisible(true);
+    }
   };
 
   const handleFocus = () => {
@@ -53,6 +84,11 @@ export default function SearchUsers({ users }: SearchUsersProps) {
     }
   };
 
+  const handleUserClick = (username: string) => {
+    router.push(`/profile/${username}`);
+    setIsDropdownVisible(false);
+  };
+
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -61,11 +97,7 @@ export default function SearchUsers({ users }: SearchUsersProps) {
   }, []);
 
   return (
-    <div
-      className="relative w-full mx-auto p-4"
-      ref={searchContainerRef}
-    >
-      {/* Campo de entrada com ícone */}
+    <div ref={searchContainerRef} className="relative w-full p-4">
       <div className="relative">
         <AiOutlineSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
         <Input
@@ -74,32 +106,37 @@ export default function SearchUsers({ users }: SearchUsersProps) {
           onChange={handleSearch}
           onFocus={handleFocus}
           placeholder="Pesquisar"
-          className="w-full pl-10 text-base" 
+          className="w-full pl-10 text-base"
         />
       </div>
-      {/* Dropdown de resultados */}
       {isDropdownVisible && (
-        <div className="absolute top-full left-1/2 -translate-x-1/2 w-full-minus-2rem bg-background border shadow-lg rounded-md z-20 text-base">
-          {filteredUsers.length > 0 ? (
-            <ScrollArea className="h-full">
-              <ul className="p-2 max-h-64">
+        <div className="absolute top-full left-0 w-full bg-white border shadow-lg rounded-md z-20">
+          {isLoading ? (
+            <p className="p-4 text-gray-500">Carregando...</p>
+          ) : filteredUsers.length > 0 ? (
+            <ScrollArea className="max-h-64">
+              <ul>
                 {filteredUsers.map((user) => (
-                  <div
+                  <li
                     key={user.id}
-                    className="p-2 transition bg-background hover:bg-zinc-700 rounded-md"
+                    className="p-2 cursor-pointer hover:bg-gray-200 flex items-center gap-4"
+                    onClick={() => handleUserClick(user.username)}
                   >
-                    <UserAvatar
+                    <img
                       src={user.avatarSrc}
-                      fallbackText={user.name.charAt(0) + user.username.charAt(0)}
-                      username={user.username}
-                      fullName={user.name}
+                      alt={`${user.name} avatar`}
+                      className="w-8 h-8 rounded-full"
                     />
-                  </div>
+                    <div>
+                      <p className="font-medium">{user.name}</p>
+                      <p className="text-sm text-gray-500">@{user.username}</p>
+                    </div>
+                  </li>
                 ))}
               </ul>
             </ScrollArea>
           ) : (
-            <p className="p-4 text-gray-500 text-sm">Nenhum resultado para &ldquo;{query}&ldquo;</p>
+            <p className="p-4 text-gray-500">Nenhum resultado para &ldquo;{query}&rdquo;</p>
           )}
         </div>
       )}
