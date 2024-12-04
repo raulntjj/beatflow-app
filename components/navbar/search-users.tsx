@@ -97,7 +97,7 @@ export default function SearchUsers() {
   }, []);
 
   return (
-    <div ref={searchContainerRef} className="relative w-full p-4">
+    <div ref={searchContainerRef} className="relative w-full py-4">
       <div className="relative">
         <AiOutlineSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
         <Input
@@ -106,20 +106,20 @@ export default function SearchUsers() {
           onChange={handleSearch}
           onFocus={handleFocus}
           placeholder="Pesquisar"
-          className="w-full pl-10 text-base"
+          className="w-full pl-10 text-base border-[2px] border-zinc-700"
         />
       </div>
       {isDropdownVisible && (
-        <div className="absolute top-full left-0 w-full bg-white border shadow-lg rounded-md z-20">
+        <div className="absolute top-full left-0 w-full bg-background border-[2px] border-zinc-700 shadow-lg rounded-md overflow-hidden z-20">
           {isLoading ? (
             <p className="p-4 text-gray-500">Carregando...</p>
           ) : filteredUsers.length > 0 ? (
-            <ScrollArea className="max-h-64">
-              <ul>
+            <ScrollArea className="h-full">
+              <div className="max-h-64">
                 {filteredUsers.map((user) => (
-                  <li
+                  <div
                     key={user.id}
-                    className="p-2 cursor-pointer hover:bg-gray-200 flex items-center gap-4"
+                    className="p-2 cursor-pointer hover:bg-zinc-800 flex items-center gap-4"
                     onClick={() => handleUserClick(user.username)}
                   >
                     <img
@@ -131,9 +131,9 @@ export default function SearchUsers() {
                       <p className="font-medium">{user.name}</p>
                       <p className="text-sm text-gray-500">@{user.username}</p>
                     </div>
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </ScrollArea>
           ) : (
             <p className="p-4 text-gray-500">Nenhum resultado para &ldquo;{query}&rdquo;</p>

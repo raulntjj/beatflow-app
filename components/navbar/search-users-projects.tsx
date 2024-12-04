@@ -7,6 +7,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { ScrollArea } from "../ui/scroll-area";
 
 interface User {
   id: number;
@@ -69,51 +70,53 @@ export default function SearchUsers({
 
   return (
     <div className="space-y-4">
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <Popover open={isOpen} onOpenChange={setIsOpen} >
         <PopoverTrigger asChild>
           <div className="relative w-full">
             <Input
               ref={inputRef}
               type="text"
-              placeholder="Search users by name or username"
+              placeholder="Pesquisar"
               value={searchTerm}
               onChange={handleInputChange}
               onFocus={handleInputFocus}
-              className="w-full"
+              className="w-full border-[2px] border-zinc-700"
             />
           </div>
         </PopoverTrigger>
         <PopoverContent
-          className="w-[calc(100%+1rem)] p-0"
+          className="p-0"
           align="start"
           sideOffset={5}
           onOpenAutoFocus={(e) => e.preventDefault()}
           onCloseAutoFocus={(e) => e.preventDefault()}
         >
           {searchTerm && filteredUsers.length === 0 ? (
-            <p className="text-gray-500 text-center p-4">No users found</p>
+            <p className="text-gray-500 text-center p-4">Nenhum usuário encontrado</p>
           ) : (
-            <div className="max-h-[300px] overflow-y-auto">
-              {filteredUsers.map((user) => (
-                <div
-                  key={user.id}
-                  className="flex items-center space-x-4 p-2 hover:bg-gray-100 cursor-pointer transition-colors"
-                  onClick={() => handleUserSelect(user)}
-                >
-                  <Avatar>
-                    <AvatarImage
-                      src={user.avatarSrc || "/default-avatar.png"}
-                      alt={user.name}
-                    />
-                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-medium">{user.name}</p>
-                    <p className="text-gray-500 text-sm">@{user.username}</p>
+            <ScrollArea className="h-full w-full">
+              <div className="max-h-64">
+                {filteredUsers.map((user) => (
+                  <div
+                    key={user.id}
+                    className="w-full flex items-center space-x-4 p-2 hover:bg-gray-100 cursor-pointer transition-colors"
+                    onClick={() => handleUserSelect(user)}
+                  >
+                    <Avatar>
+                      <AvatarImage
+                        src={user.avatarSrc || "/default-avatar.png"}
+                        alt={user.name}
+                      />
+                      <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-medium">{user.name}</p>
+                      <p className="text-gray-500 text-sm">@{user.username}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </ScrollArea>
           )}
         </PopoverContent>
       </Popover>

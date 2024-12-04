@@ -23,7 +23,7 @@ export default function RegisterForm() {
   const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1); // Controle de etapas
-  const [selectedImage, setSelectedImage] = useState(null); // Armazenar a imagem selecionada
+  const [selectedImage, setSelectedImage] = useState<File | null>(null); // Armazenar a imagem selecionada
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,8 +75,8 @@ export default function RegisterForm() {
       formDataToSend.append("user", formData.usuario);
       formDataToSend.append("password", formData.senha);
       formDataToSend.append("password_confirmation", formData.confirmarSenha);
-      formDataToSend.append("is_private", is_private);
-      formDataToSend.append("bio", bio);
+      formDataToSend.append("is_private", is_private.toString());
+      formDataToSend.append("bio", bio ?? "");
       if (selectedImage) {
         formDataToSend.append("image", selectedImage);
       }
