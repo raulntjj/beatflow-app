@@ -79,7 +79,8 @@ export default function Projects() {
           post: {
             user: {
               id: project.owner.id,
-              user: `${project.owner.name} ${project.owner.last_name}`,
+              name: `${project.owner.name} ${project.owner.last_name}`,
+              user: `${project.owner.user}`,
               profile_photo_temp: project.owner.profile_photo_temp || "",
             },
             content: project.content,
@@ -90,6 +91,7 @@ export default function Projects() {
             participants: project.participants.map((participant: any) => ({
               id: participant.id,
               name: `${participant.name} ${participant.last_name}`,
+              user: `${participant.user}`,
               avatarSrc: participant.profile_photo_temp || "",
             })),
           },
