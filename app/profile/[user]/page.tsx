@@ -17,6 +17,10 @@ interface UserData {
 }
 
 type Post = {
+  created_at: string;
+  media_temp: string;
+  media_type: string;
+  content: string;
   id: string;
   post: {
     user: {
