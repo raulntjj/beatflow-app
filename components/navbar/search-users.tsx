@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { AiOutlineSearch } from "react-icons/ai"; 
+import { AiOutlineSearch } from "react-icons/ai";
 import { UserAvatar } from "../user/user-avatar";
-import { Input } from "@/components/ui/input"; 
-import { ScrollArea } from "@/components/ui/scroll-area"; 
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface User {
   id: number;
@@ -17,7 +17,7 @@ interface SearchUsersProps {
   users: User[];
 }
 
-export default function SearchUsers({ users }: SearchUsersProps) {
+export default function SearchUsersJonas({ users }: SearchUsersProps) {
   const [query, setQuery] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -30,9 +30,10 @@ export default function SearchUsers({ users }: SearchUsersProps) {
     if (value.trim() === "") {
       setFilteredUsers([]);
     } else {
-      const results = users.filter((user) =>
-        user.name.toLowerCase().includes(value.toLowerCase()) ||
-        user.username.toLowerCase().includes(value.toLowerCase())
+      const results = users.filter(
+        (user) =>
+          user.name.toLowerCase().includes(value.toLowerCase()) ||
+          user.username.toLowerCase().includes(value.toLowerCase())
       );
       setFilteredUsers(results);
     }
@@ -63,10 +64,7 @@ export default function SearchUsers({ users }: SearchUsersProps) {
   }, []);
 
   return (
-    <div
-      className="relative w-full mx-auto p-4"
-      ref={searchContainerRef}
-    >
+    <div className="relative w-full mx-auto p-4" ref={searchContainerRef}>
       {/* Campo de entrada com ícone */}
       <div className="relative">
         <AiOutlineSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
@@ -76,7 +74,7 @@ export default function SearchUsers({ users }: SearchUsersProps) {
           onChange={handleSearch}
           onFocus={handleFocus}
           placeholder="Pesquisar"
-          className="w-full pl-10 text-base" 
+          className="w-full pl-10 text-base"
         />
       </div>
       {/* Dropdown de resultados */}
@@ -92,7 +90,9 @@ export default function SearchUsers({ users }: SearchUsersProps) {
                   >
                     <UserAvatar
                       src={user.avatarSrc}
-                      fallbackText={user.name.charAt(0) + user.username.charAt(0)}
+                      fallbackText={
+                        user.name.charAt(0) + user.username.charAt(0)
+                      }
                       username={user.username}
                       fullName={user.name}
                     />
@@ -101,7 +101,9 @@ export default function SearchUsers({ users }: SearchUsersProps) {
               </ul>
             </ScrollArea>
           ) : (
-            <p className="p-4 text-gray-500 text-sm">Nenhum resultado para &ldquo;{query}&ldquo;</p>
+            <p className="p-4 text-gray-500 text-sm">
+              Nenhum resultado para &ldquo;{query}&ldquo;
+            </p>
           )}
         </div>
       )}

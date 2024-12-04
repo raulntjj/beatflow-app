@@ -35,7 +35,12 @@ export default function NavbarItems() {
 
   const navbarItems = [
     { icon: Home, label: "Página inicial", href: "/", key: "home" },
-    { icon: HiOutlineUserGroup, label: "Projetos", href: "/", key: "projects" },
+    {
+      icon: HiOutlineUserGroup,
+      label: "Projetos",
+      href: "projects",
+      key: "projects",
+    },
     { icon: Heart, label: "Notificações", href: "/", key: "notifications" },
   ];
 
