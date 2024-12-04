@@ -30,8 +30,8 @@ export default function ProfilePhoto({
     <div>
       <Avatar className={`${sizeClasses[size]} ${className || ""}`}>
         <AvatarImage
-          src={userData?.user?.profile_photo_temp}
-          alt={userData?.user?.name}
+          src={src}
+          alt={alt}
         />
         <AvatarFallback>
           {fallbackIcon || alt?.charAt(0).toUpperCase() || "?"}
