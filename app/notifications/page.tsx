@@ -63,7 +63,7 @@ export default function Notifications() {
     try {
       const userToken = await getToken();
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/notifications/${notificationId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/notifications/read/${notificationId}`,
         {
           method: "PATCH",
           headers: {
