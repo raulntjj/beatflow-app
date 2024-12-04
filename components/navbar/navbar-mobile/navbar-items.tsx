@@ -20,7 +20,7 @@ export default function NavbarMobileItems() {
 
   const navbarItems = [
     { icon: Home, label: "Página inicial", href: "/", key: "home" },
-    { icon: HiOutlineUserGroup, label: "Collabs", href: "/", key: "collabs" },
+    { icon: HiOutlineUserGroup, label: "Projects", href: "/", key: "projects" },
   ];
 
   return (
