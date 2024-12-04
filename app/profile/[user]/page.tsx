@@ -11,9 +11,12 @@ interface UserData {
   user: string;
   profile_photo_temp: string;
   name: string;
+  last_name: string;
+  email: string;
   followers_count: string;
   followed_count: string;
   bio: string;
+  is_private: boolean;
 }
 
 type Post = {
@@ -57,6 +60,7 @@ export default function Profile({
     null
   );
   const [followersCount, setFollowersCount] = useState(0);
+  const [isEditing, setIsEditing] = useState(false);
 
   const userSession = useContext(UserContext);
 
@@ -132,30 +136,40 @@ export default function Profile({
 
   const isSameUser = resolvedParams?.user === userSession?.user?.user;
 
-  const handleFollow = async () => {
-    const userToken = await getToken();
-
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/follows`;
-    const method = isFollowing ? "DELETE" : "POST";
-    const body = JSON.stringify({
-      follower_id: userSession?.user?.id,
-      followed_id: userData?.id,
-    });
-
-    const res = await fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${userToken}`,
-      },
-      body,
-    });
-
-    if (res.ok) {
-      setIsFollowing(!isFollowing);
-      setFollowersCount((prev) => (isFollowing ? prev - 1 : prev + 1));
+  const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.currentTarget);
+  
+    formData.append('_method', 'PUT');
+  
+    try {
+      const userToken = await getToken();
+  
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/me`,
+        {
+          method: "POST", // Enviado como POST para suporte ao FormData com _method
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+          body: formData,
+        }
+      );
+  
+      if (!res.ok) {
+        throw new Error("Erro ao salvar as alterações.");
+      }
+  
+      const updatedData = await res.json();
+      setUserData(updatedData.response); // Atualiza os dados do usuário
+      setIsEditing(false); // Fecha o modal
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao enviar os dados. Verifique o console.");
     }
   };
+  
 
   return (
     <div>
@@ -173,11 +187,18 @@ export default function Profile({
           {isFollowing ? "Deixar de seguir" : "Seguir"}
         </button>
       )}
+      {isSameUser && (
+        <button
+          className="p-2 bg-green-600 rounded-md"
+          onClick={() => setIsEditing(true)}
+        >
+          Editar Perfil
+        </button>
+      )}
       <div className="relative flex flex-col space-y-10 w-[500px]">
         {posts.length > 0 ? (
           posts.map((post) => (
             <article key={post.id} className="w-full">
-              {/* Transformar o dado para que siga o formato esperado */}
               <UserPost
                 post={{
                   id: post.id,
@@ -200,6 +221,95 @@ export default function Profile({
           <p>Nenhuma postagem.</p>
         )}
       </div>
+
+      {isEditing && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-4 rounded-md">
+            <h2 className="text-xl mb-4">Editar Perfil</h2>
+            <form onSubmit={handleEditSubmit}>
+              <div className="mb-4">
+                <label className="block">Nome</label>
+                <input
+                  type="text"
+                  name="name"
+                  defaultValue={userData.name}
+                  className="border p-2 w-full"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block">Sobrenome</label>
+                <input
+                  type="text"
+                  name="last_name"
+                  defaultValue={userData.last_name}
+                  className="border p-2 w-full"
+                />
+              </div>
+              {/* <div className="mb-4">
+                <label className="block">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  defaultValue={userData.email}
+                  className="border p-2 w-full"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block">Usuário</label>
+                <input
+                  type="text"
+                  name="user"
+                  defaultValue={userData.user}
+                  className="border p-2 w-full"
+                />
+              </div> */}
+              <div className="mb-4">
+                <label className="block">Foto de Perfil</label>
+                <input
+                  type="file"
+                  name="profile_photo_path"
+                  className="border p-2 w-full"
+                  accept="image/*"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block">Biografia</label>
+                <textarea
+                  name="bio"
+                  defaultValue={userData.bio}
+                  className="border p-2 w-full"
+                />
+              </div>
+              {/* <div className="mb-4">
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    name="is_private"
+                    defaultChecked={userData.is_private}
+                    className="mr-2"
+                  />
+                  Perfil Privado
+                </label>
+              </div> */}
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  className="p-2 bg-blue-600 text-white rounded-md"
+                >
+                  Salvar
+                </button>
+                <button
+                  type="button"
+                  className="p-2 bg-gray-400 text-white rounded-md"
+                  onClick={() => setIsEditing(false)}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
