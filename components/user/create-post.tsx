@@ -141,7 +141,7 @@ export default function CreatePost() {
               onChange={handleChange}
               placeholder="Conteúdo"
               className="mt-2 bg-zinc-800 border border-zinc-700 text-white focus:ring-blue-500 focus:border-blue-500 rounded-md w-full p-2 resize-none"
-              rows={1}
+              rows={2}
               required
             ></textarea>
             <FileUpload onChange={handleFileChange} />
