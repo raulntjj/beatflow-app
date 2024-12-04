@@ -136,6 +136,31 @@ export default function Profile({
 
   const isSameUser = resolvedParams?.user === userSession?.user?.user;
 
+  const handleFollow = async () => {
+    const userToken = await getToken();
+
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/follows`;
+    const method = isFollowing ? "DELETE" : "POST";
+    const body = JSON.stringify({
+      follower_id: userSession?.user?.id,
+      followed_id: userData?.id,
+    });
+
+    const res = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userToken}`,
+      },
+      body,
+    });
+
+    if (res.ok) {
+      setIsFollowing(!isFollowing);
+      setFollowersCount((prev) => (isFollowing ? prev - 1 : prev + 1));
+    }
+  };
+
   const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
@@ -169,7 +194,6 @@ export default function Profile({
       alert("Erro ao enviar os dados. Verifique o console.");
     }
   };
-  
 
   return (
     <div>
