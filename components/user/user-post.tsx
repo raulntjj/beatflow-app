@@ -146,15 +146,19 @@ export default function UserPost({ post }: { post: Post }) {
       <div className="p-0">
         <div className="flex items-center justify-between text-foreground">
           <div className="flex items-center gap-3">
-            <Avatar>
-              <AvatarImage src={post.post.user.profile_photo_temp} />
-              <AvatarFallback>
-                {post.post.user.user.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <CardTitle className="text-sm font-medium">
-              {post.post.user.user}
-            </CardTitle>
+            <a href={`/profile/${post.post.user.user}`} className="cursor-pointer">
+              <Avatar>
+                <AvatarImage src={post.post.user.profile_photo_temp} />
+                <AvatarFallback>
+                  {post.post.user.user.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </a>
+            <a href={`/profile/${post.post.user.user}`} className="cursor-pointer">
+              <CardTitle className="text-sm font-medium">
+                {post.post.user.user}
+              </CardTitle>
+            </a>
           </div>
           <span className="text-xs text-gray-500">
             {formatDate(post.post.created_at)}
