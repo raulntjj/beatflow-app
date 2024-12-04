@@ -10,6 +10,7 @@ import { useContext, useEffect, useState } from "react";
 import { PiBroomFill } from "react-icons/pi";
 import { Button } from "../../components/ui/button";
 import { ScrollArea } from "../../components/ui/scroll-area";
+import SearchUsers from "../../components/navbar/search-users";
 
 export default function Notifications() {
   const pathname = usePathname(); 
@@ -89,71 +90,69 @@ export default function Notifications() {
   };
 
   return (
-    <div className="space-y-4 w-full max-w-[600px] mx-auto bg-background py-4">
-      {loading ? (
-        <p>Carregando notificações...</p>
-      ) : (
-        <div className="flex flex-col bg-background">
-          <div className="px-4 pb-6 flex items-center justify-between">
-            {/* Exibe o Link apenas se estiver na rota /notifications */}
-            {pathname === "/notifications" && (
-              <Link href={`/`}>
-                <ChevronLeft className="w-7 h-7" />
-              </Link>
-            )}
-            <span className="text-2xl font-bold">Notificações</span>
-            <Button
-              variant={"outline"}
-              className="text-sm p-2"
-              onClick={deleteNotifications}
-            >
-              <PiBroomFill />
-            </Button>
-          </div>
-          <ScrollArea className="h-full">
-            {notifications.length > 0 ? (
-              notifications.map((notification) => (
-                <div
-                  key={notification.id}
-                  className="flex items-center px-4 py-2 transition duration-200 hover:bg-zinc-800 cursor-pointer"
-                >
-                  <Avatar className="mr-4">
-                    <AvatarImage
-                      src={notification.user?.avatarSrc || ""}
-                      alt={notification.user?.name || ""}
-                    />
-                    <AvatarFallback>
-                      {notification.user?.name?.[0] || "?"}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <div className="text-left space-y-1">
-                      {notification.user && (
-                        <a
-                          href={`/profile/${notification.user.id}`}
-                          className="cursor-pointer"
-                        >
-                          <span className="block text-sm font-semibold text-foreground">
-                            {notification.user.name}
-                          </span>
-                        </a>
-                      )}
-                      <span className="block text-xs text-foreground/70">
-                        {notification.content}
-                      </span>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(notification.created_at).toLocaleString()}
-                      </p>
+    <>
+      <div className="space-y-4 w-full max-w-[600px] mx-auto bg-background py-4">
+        {loading ? (
+          <p>Carregando notificações...</p>
+        ) : (
+          <div className="flex flex-col bg-background">
+            <div className="px-4 pb-6 flex items-center justify-between">
+              {/* Exibe o Link apenas se estiver na rota /notifications */}
+              {pathname === "/notifications" && (
+                <Link href={`/`}>
+                  <ChevronLeft className="w-7 h-7" />
+                </Link>
+              )}
+              <span className="text-2xl font-bold">Notificações</span>
+              <Button variant={"outline"} className="text-sm p-2">
+                <PiBroomFill />
+              </Button>
+            </div>
+            <ScrollArea className="h-full">
+              {notifications.length > 0 ? (
+                notifications.map((notification) => (
+                  <div
+                    key={notification.id}
+                    className="flex items-center px-4 py-2 transition duration-200 hover:bg-zinc-800 cursor-pointer"
+                  >
+                    <Avatar className="mr-4">
+                      <AvatarImage
+                        src={notification.user?.avatarSrc || ""}
+                        alt={notification.user?.name || ""}
+                      />
+                      <AvatarFallback>
+                        {notification.user?.name?.[0] || "?"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <div className="text-left space-y-1">
+                        {notification.user && (
+                          <a
+                            href={`/profile/${notification.user.id}`}
+                            className="cursor-pointer"
+                          >
+                            <span className="block text-sm font-semibold text-foreground">
+                              {notification.user.name}
+                            </span>
+                          </a>
+                        )}
+                        <span className="block text-xs text-foreground/70">
+                          {notification.content}
+                        </span>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(notification.created_at).toLocaleString()}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))
-            ) : (
-              <p>Nenhuma notificação encontrada.</p>
-            )}
-          </ScrollArea>
-        </div>
-      )}
-    </div>
+                ))
+              ) : (
+                <p>Nenhuma notificação encontrada.</p>
+              )}
+            </ScrollArea>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
