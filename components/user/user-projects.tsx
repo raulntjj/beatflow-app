@@ -32,8 +32,8 @@ interface Post {
 export default function UserProject({ post }: { post: Post }) {
   const userData = useContext(UserContext);
   const userId = userData?.user?.id;
-  console.log(userData);
-  console.log(post);
+  // console.log(userData);
+  // console.log(post);
 
   // Função para formatar a data
   const formatDate = (createdAt: string) => {
