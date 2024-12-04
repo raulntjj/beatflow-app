@@ -1,7 +1,6 @@
 "use client";
 
 import { useContext, useState } from "react";
-import { Input } from "../ui/input";
 import { UserContext } from "@/context/user-context";
 import { Button } from "../ui/button";
 import getToken from "@/utils/getToken";
@@ -16,6 +15,7 @@ import {
 import { PlusSquare } from "lucide-react";
 import { toast } from "sonner";
 import { FaCheck } from "react-icons/fa";
+import { Textarea } from "../ui/textarea";
 
 export default function CreatePost() {
   const userData = useContext(UserContext);
@@ -29,7 +29,7 @@ export default function CreatePost() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false); // Controla a visibilidade do dialog
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
 
     setFormData((prev) => ({
@@ -114,7 +114,7 @@ export default function CreatePost() {
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <DialogTrigger className="flex w-full justify-center tablet:justify-start items-center">
+      <DialogTrigger className="flex w-[300px] sm:w-full justify-center tablet:justify-start items-center">
         <PlusSquare className="tablet:mr-3 h-7 w-7" />
         <span className="hidden tablet:block">Criar</span>
       </DialogTrigger>
@@ -125,25 +125,16 @@ export default function CreatePost() {
           </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col items-center justify-center">
-          <form onSubmit={handleSubmit} encType="multipart/form-data">
-            {/* <Input
-              type="text"
+          <form onSubmit={handleSubmit} encType="multipart/form-data" className="w-full">
+            <Textarea 
               name="content"
               value={formData.content}
               onChange={handleChange}
-              placeholder="Conteúdo"
-              className="mt-2 bg-zinc-800 border-zinc-700 text-white focus:ring-blue-500"
-              required
-            /> */}
-            <textarea
-              name="content"
-              value={formData.content}
-              onChange={handleChange}
-              placeholder="Conteúdo"
+              placeholder="Conteudo da postagem"
               className="mt-2 bg-zinc-800 border border-zinc-700 text-white focus:ring-blue-500 focus:border-blue-500 rounded-md w-full p-2 resize-none"
               rows={2}
-              required
-            ></textarea>
+              required 
+            />
             <FileUpload onChange={handleFileChange} />
             <div className="w-full flex">
               <Button

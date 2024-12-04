@@ -127,9 +127,9 @@ export default function SearchUsers() {
                       alt={`${user.name} avatar`}
                       className="w-8 h-8 rounded-full"
                     />
-                    <div>
-                      <p className="font-medium">{user.name}</p>
-                      <p className="text-sm text-gray-500">@{user.username}</p>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-foreground">@{user.username}</p>
+                      <p className="text-sm text-foreground/70">{user.name}</p>
                     </div>
                   </div>
                 ))}

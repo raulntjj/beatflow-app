@@ -20,7 +20,7 @@ export default function NavbarDesktop() {
         </div>
       </div>
       <div
-        className={`absolute z-10 top-0 left-full h-full w-[397px] bg-background 
+        className={`absolute z-10 top-0 left-full h-full w-[350px] bg-background 
           border-r-[2px] border-zinc-700 shadow-lg py-4 transition-all duration-300 ease-in-out 
           ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
       >

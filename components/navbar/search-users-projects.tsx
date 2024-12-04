@@ -24,7 +24,7 @@ interface SearchUsersProps {
   ownerId: number; // Adicionado para identificar o ID do proprietário
 }
 
-export default function SearchUsers({
+export default function SearchUsersProjects({
   users,
   selectedUsers,
   setSelectedUsers,
@@ -69,7 +69,7 @@ export default function SearchUsers({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="w-full">
       <Popover open={isOpen} onOpenChange={setIsOpen} >
         <PopoverTrigger asChild>
           <div className="relative w-full">
@@ -99,7 +99,7 @@ export default function SearchUsers({
                 {filteredUsers.map((user) => (
                   <div
                     key={user.id}
-                    className="w-full flex items-center space-x-4 p-2 hover:bg-gray-100 cursor-pointer transition-colors"
+                    className="w-full flex items-center space-x-4 p-2 bg-ba hover:bg-gray-100 cursor-pointer transition-colors"
                     onClick={() => handleUserSelect(user)}
                   >
                     <Avatar>
@@ -125,22 +125,22 @@ export default function SearchUsers({
         {selectedUsers.map((user) => (
           <div
             key={user.id}
-            className="flex items-center space-x-2 bg-gray-100 px-4 py-2 rounded-lg shadow-md"
+            className="flex items-center space-x-2 bg-background px-4 py-2 rounded-lg shadow-md"
           >
-            <Avatar>
+            {/* <Avatar>
               <AvatarImage
                 src={user.avatarSrc || "/default-avatar.png"}
                 alt={user.name}
               />
               <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="font-medium">{user.name}</p>
-              <p className="text-gray-500 text-sm">@{user.username}</p>
+            </Avatar> */}
+            <div className="flex justify-center items-center">
+              {/* <p className="font-medium">{user.name}</p> */}
+              <p className="text-foreground font-semi text-sm">@{user.username}</p>
             </div>
             <button
               onClick={() => handleUserRemove(user)}
-              className="text-red-500 font-bold hover:text-red-700"
+              className="text-foreground font-bold hover:text-red-700"
             >
               ×
             </button>
