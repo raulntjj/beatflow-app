@@ -5,12 +5,14 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CardContent, CardTitle } from "@/components/ui/card";
 import { UserContext } from "@/context/user-context";
 import Image from "next/image";
+import getToken from "@/utils/getToken";
 
 interface Post {
   id: string;
   post: {
     user: {
       id: string;
+      name: string;
       user: string;
       profile_photo_temp: string;
     };
@@ -22,6 +24,7 @@ interface Post {
     participants: Array<{
       id: string;
       name: string;
+      user: string;
       avatarSrc: string;
     }>;
   };
@@ -30,6 +33,8 @@ interface Post {
 export default function UserProject({ post }: { post: Post }) {
   const userData = useContext(UserContext);
   const userId = userData?.user?.id;
+  // console.log(userData);
+  // console.log(post);
 
   // Função para formatar a data
   const formatDate = (createdAt: string) => {
@@ -63,25 +68,56 @@ export default function UserProject({ post }: { post: Post }) {
   };
 
   // Criar lista de participantes incluindo o criador
-  const participants = [
-    post.post.user.user,
-    ...post.post.participants.map((participant) => participant.name),
-  ];
+  // const participants = [
+  //   post.post.user.user,
+  //   ...post.post.participants.map((participant) => participant.name),
+  // ];
+
+  const deletePost = async () => {
+    const userToken = await getToken();
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${post.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+
+      if (res.ok) {
+        window.location.reload();
+      } else {
+        throw new Error("Failed to delete post");
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      alert("Ocorreu um erro ao deletar o post.");
+    }
+  };
+
 
   return (
     <div className="w-full mx-auto shadow-none border-0 rounded-none bg-background ">
+      {userId === post.post.user.id && (
+        <button onClick={deletePost} >Deletar Post</button>
+      )}
       <div className="p-0">
         <div className="flex items-center justify-between text-foreground">
           <div className="flex items-center gap-3">
-            <Avatar>
-              <AvatarImage src={post.post.user.profile_photo_temp} />
-              <AvatarFallback>
-                {post.post.user.user.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <CardTitle className="text-sm font-medium">
-              {post.post.user.user}
-            </CardTitle>
+            <a href={`/profile/${post.post.user.user}`} className="cursor-pointer">
+              <Avatar>
+                <AvatarImage src={post.post.user.profile_photo_temp} />
+                <AvatarFallback>
+                  {post.post.user.user.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </a>
+            <a href={`/profile/${post.post.user.user}`} className="cursor-pointer">
+              <CardTitle className="text-sm font-medium">
+                {post.post.user.name}
+              </CardTitle>
+            </a>
           </div>
           <span className="text-xs text-gray-500">
             {formatDate(post.post.created_at)}
@@ -116,12 +152,16 @@ export default function UserProject({ post }: { post: Post }) {
                       key={participant.id}
                       className="flex items-center gap-3 text-xs text-gray-600"
                     >
-                      <img
-                        src={participant.avatarSrc}
-                        alt={`${participant.name}'s avatar`}
-                        className="w-8 h-8 rounded-full"
-                      />
-                      {participant.name}
+                      <a href={`/profile/${participant.user}`} className="cursor-pointer">
+                        <img
+                          src={participant.avatarSrc}
+                          alt={`${participant.name}'s avatar`}
+                          className="w-8 h-8 rounded-full"
+                        />
+                      </a>
+                      <a href={`/profile/${participant.user}`} className="cursor-pointer">
+                        {participant.name}
+                      </a>
                     </li>
                   ))}
                 </ul>

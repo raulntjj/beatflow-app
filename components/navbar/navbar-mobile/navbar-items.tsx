@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Home, MenuIcon, PlusSquare } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
 import { HiMiniUserGroup, HiOutlineUserGroup } from 'react-icons/hi2';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../../ui/dialog';
 import { FileUpload } from '../../ui/file-upload';
@@ -10,7 +9,13 @@ import ProfilePhoto from '../../user/profile-photo';
 import CreatePost from '../../user/create-post';
 import PlusOptions from '../plus-options';
 
+import { useContext, useState } from 'react';
+import { UserContext } from "@/context/user-context";
+
 export default function NavbarMobileItems() {
+
+  const userData = useContext(UserContext);
+
   const [files, setFiles] = useState<File[]>([]); // eslint-disable-line @typescript-eslint/no-unused-vars
   const handleFileUpload = (files: File[]) => {
     setFiles(files);
@@ -43,7 +48,11 @@ export default function NavbarMobileItems() {
         href={`/profile/{user}`}
         className="flex w-full justify-center tablet:justify-start items-center"
       >
-        <ProfilePhoto src="" alt="" className="tablet:mr-3" />
+        <ProfilePhoto 
+          src={userData?.profile_photo_temp}
+          alt={userData?.name}
+          className="tablet:mr-3"
+        />
       </Link>
       <PlusOptions />
     </div>

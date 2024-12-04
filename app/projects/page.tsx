@@ -35,7 +35,7 @@ export default function Projects() {
         });
 
         if (!res.ok) {
-          throw new Error("Erro ao retornar posts.");
+          throw new Error("Erro ao retornar projetos.");
         }
 
         const data = await res.json();
@@ -48,7 +48,7 @@ export default function Projects() {
         }));
         setUsers(formattedUsers);
       } catch (err) {
-        console.error("Erro ao buscar posts:", err);
+        console.error("Erro ao buscar projetos:", err);
         setPosts([]);
       } finally {
         setLoading(false);
@@ -79,7 +79,8 @@ export default function Projects() {
           post: {
             user: {
               id: project.owner.id,
-              user: `${project.owner.name} ${project.owner.last_name}`,
+              name: `${project.owner.name} ${project.owner.last_name}`,
+              user: `${project.owner.user}`,
               profile_photo_temp: project.owner.profile_photo_temp || "",
             },
             content: project.content,
@@ -90,6 +91,7 @@ export default function Projects() {
             participants: project.participants.map((participant: any) => ({
               id: participant.id,
               name: `${participant.name} ${participant.last_name}`,
+              user: `${participant.user}`,
               avatarSrc: participant.profile_photo_temp || "",
             })),
           },
@@ -169,7 +171,7 @@ export default function Projects() {
   return (
     <div className="w-[600px]">
       {loading ? (
-        <p>Carregando posts...</p>
+        <p>Carregando projetos...</p>
       ) : (
         <div className="relative flex flex-col space-y-10">
           <SearchUsers

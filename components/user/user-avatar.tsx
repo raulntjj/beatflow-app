@@ -7,18 +7,22 @@ export const UserAvatar = () => {
   return (
     <div className="w-fit flex flex-row items-center justify-center space-x-2">
       <div className={`relative flex items-center justify-center w-16 h-16`}>
-        <Avatar className="w-12 h-12 rounded-full bg-background">
-          <AvatarImage
-            src={userData?.user?.profile_photo_temp}
-            alt={userData?.user?.name}
-          />
-          <AvatarFallback>{userData?.user?.profile_photo_temp}</AvatarFallback>
-        </Avatar>
+        <a href={`/profile/${userData?.user?.user}`} className="cursor-pointer">
+          <Avatar className="w-12 h-12 rounded-full bg-background">
+            <AvatarImage
+              src={userData?.user?.profile_photo_temp}
+              alt={userData?.user?.name}
+            />
+            <AvatarFallback>{userData?.user?.profile_photo_temp}</AvatarFallback>
+          </Avatar>
+        </a>
       </div>
       <div className="text-left space-y-1">
-        <span className="block text-sm font-semibold text-foreground">
-          {userData?.user?.user}
-        </span>
+        <a href={`/profile/${userData?.user?.user}`} className="cursor-pointer">
+          <span className="block text-sm font-semibold text-foreground">
+            {userData?.user?.user}
+          </span>
+        </a>
         <span className="block text-xs text-foreground/70">
           {userData?.user?.name} {userData?.user?.last_name}
         </span>

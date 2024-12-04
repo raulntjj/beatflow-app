@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useContext, useEffect, useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CardContent, CardTitle } from "@/components/ui/card";
@@ -35,7 +33,6 @@ export default function UserPost({ post }: { post: Post }) {
   const userData = useContext(UserContext);
   const userId = userData?.user?.id;
 
-  // Fetch engagements
   const getEngagements = async () => {
     try {
       const userToken = await getToken();
@@ -75,7 +72,6 @@ export default function UserPost({ post }: { post: Post }) {
   const formatDate = (createdAt: string) => {
     const postDate = new Date(createdAt);
     const now = new Date();
-
     const diffInMilliseconds = now.getTime() - postDate.getTime();
 
     const seconds = Math.floor(diffInMilliseconds / 1000);
@@ -87,19 +83,12 @@ export default function UserPost({ post }: { post: Post }) {
 
     const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
 
-    if (years > 0) {
-      return rtf.format(-years, "year");
-    } else if (months > 0) {
-      return rtf.format(-months, "month");
-    } else if (days > 0) {
-      return rtf.format(-days, "day");
-    } else if (hours > 0) {
-      return rtf.format(-hours, "hour");
-    } else if (minutes > 0) {
-      return rtf.format(-minutes, "minute");
-    } else {
-      return rtf.format(-seconds, "second");
-    }
+    if (years > 0) return rtf.format(-years, "year");
+    if (months > 0) return rtf.format(-months, "month");
+    if (days > 0) return rtf.format(-days, "day");
+    if (hours > 0) return rtf.format(-hours, "hour");
+    if (minutes > 0) return rtf.format(-minutes, "minute");
+    return rtf.format(-seconds, "second");
   };
 
   const handleLike = async () => {
@@ -141,20 +130,50 @@ export default function UserPost({ post }: { post: Post }) {
     }
   };
 
+  const deletePost = async () => {
+    const userToken = await getToken();
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${post.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+
+      if (res.ok) {
+        window.location.reload();
+      } else {
+        throw new Error("Failed to delete post");
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      alert("Ocorreu um erro ao deletar o post.");
+    }
+  };
+
   return (
-    <div className="w-full mx-auto shadow-none border-0 rounded-none bg-background ">
+    <div className="w-full mx-auto shadow-none border-0 rounded-none bg-background">
+      {userId === post.post.user.id && (
+        <button onClick={deletePost} >Deletar Post</button>
+      )}
       <div className="p-0">
         <div className="flex items-center justify-between text-foreground">
           <div className="flex items-center gap-3">
-            <Avatar>
-              <AvatarImage src={post.post.user.profile_photo_temp} />
-              <AvatarFallback>
-                {post.post.user.user.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <CardTitle className="text-sm font-medium">
-              {post.post.user.user}
-            </CardTitle>
+            <a href={`/profile/${post.post.user.user}`} className="cursor-pointer">
+              <Avatar>
+                <AvatarImage src={post.post.user.profile_photo_temp} />
+                <AvatarFallback>
+                  {post.post.user.user.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </a>
+            <a href={`/profile/${post.post.user.user}`} className="cursor-pointer">
+              <CardTitle className="text-sm font-medium">
+                {post.post.user.user}
+              </CardTitle>
+            </a>
           </div>
           <span className="text-xs text-gray-500">
             {formatDate(post.post.created_at)}

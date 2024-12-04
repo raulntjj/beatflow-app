@@ -19,12 +19,8 @@ export default function NavbarItems({ isOpen, setIsOpen }: NavbarItemsProps) {
 
   const navbarItems = [
     { icon: Home, label: "Página inicial", href: "/", key: "home" },
-    {
-      icon: HiOutlineUserGroup,
-      label: "Projetos",
-      href: "projects",
-      key: "projects",
-    }
+    { icon: HiOutlineUserGroup, label: "Projetos", href: "projects", key: "projects" },
+    { icon: Heart, label: "Notificações", href: "notifications", key: "notifications" },
   ];
 
   const [activeTab, setActiveTab] = useState("home");
@@ -59,7 +55,11 @@ export default function NavbarItems({ isOpen, setIsOpen }: NavbarItemsProps) {
           href={`/profile/` + userData?.user?.user}
           className="flex w-full justify-center tablet:justify-start items-center"
         >
-          <ProfilePhoto src="" alt="" className="tablet:mr-3" />
+          <ProfilePhoto 
+            src={userData?.user?.profile_photo_temp}
+            alt={userData?.user?.name}
+            className="tablet:mr-3"
+          />
           <span className="hidden tablet:block">Perfil</span>
         </Link>
       </div>

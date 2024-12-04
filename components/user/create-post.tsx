@@ -126,7 +126,7 @@ export default function CreatePost() {
         </DialogHeader>
         <div className="flex flex-col items-center justify-center">
           <form onSubmit={handleSubmit} encType="multipart/form-data">
-            <Input
+            {/* <Input
               type="text"
               name="content"
               value={formData.content}
@@ -134,7 +134,16 @@ export default function CreatePost() {
               placeholder="Conteúdo"
               className="mt-2 bg-zinc-800 border-zinc-700 text-white focus:ring-blue-500"
               required
-            />
+            /> */}
+            <textarea
+              name="content"
+              value={formData.content}
+              onChange={handleChange}
+              placeholder="Conteúdo"
+              className="mt-2 bg-zinc-800 border border-zinc-700 text-white focus:ring-blue-500 focus:border-blue-500 rounded-md w-full p-2 resize-none"
+              rows={2}
+              required
+            ></textarea>
             <FileUpload onChange={handleFileChange} />
             <div className="w-full flex">
               <Button
