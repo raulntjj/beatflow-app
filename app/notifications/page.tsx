@@ -104,7 +104,11 @@ export default function Notifications() {
                 </Link>
               )}
               <span className="text-2xl font-bold">Notificações</span>
-              <Button variant={"outline"} className="text-sm p-2">
+              <Button
+                variant={"outline"}
+                className="text-sm p-2"
+                onClick={deleteNotifications}
+              >
                 <PiBroomFill />
               </Button>
             </div>
