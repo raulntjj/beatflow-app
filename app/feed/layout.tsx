@@ -7,7 +7,6 @@ import NavbarMobile from "../../components/navbar/navbar-mobile";
 
 export default function FeedLayout({
   children,
-  userToken,
 }: {
   children: React.ReactNode;
   userToken: string;
