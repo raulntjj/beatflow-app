@@ -16,9 +16,9 @@ export default function Projects() {
     name: "",
     title: "",
     content: "",
-    cover_path: null, // Alterado para cover_path
+    cover_path: null as File | null, // Alterado para cover_path
     cover_pathType: "", // Alterado para cover_pathType
-    media_path: null, // Novo campo para o arquivo de áudio
+    media_path: null as File | null, // Novo campo para o arquivo de áudio
     media_type: "audio", // Novo campo para o tipo de áudio
   });
 
@@ -138,7 +138,7 @@ export default function Projects() {
       formData.append("media_type", projectData.media_type);
     }
 
-    formData.append("owner_id", ownerId);
+    formData.append("owner_id", ownerId.toString());
     formData.append(
       "participants",
       JSON.stringify(selectedUsers.map((user) => user.id))
@@ -176,7 +176,7 @@ export default function Projects() {
             users={users}
             selectedUsers={selectedUsers}
             setSelectedUsers={setSelectedUsers}
-            ownerId={userData?.user?.id}
+            ownerId={userData?.user?.id ?? 0}
           />
 
           <form onSubmit={handleFormSubmit}>
@@ -197,24 +197,28 @@ export default function Projects() {
             />
             <input
               type="file"
-              onChange={(e) =>
-                setProjectData({
-                  ...projectData,
-                  cover_path: e.target.files[0],
-                  cover_pathType: e.target.files[0].type,
-                })
-              }
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  setProjectData({
+                    ...projectData,
+                    cover_path: e.target.files[0],
+                    cover_pathType: e.target.files[0].type,
+                  });
+                }
+              }}
             />
             <input
               type="file"
               accept="audio/*"
-              onChange={(e) =>
-                setProjectData({
-                  ...projectData,
-                  media_path: e.target.files[0],
-                  media_type: "audio",
-                })
-              }
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  setProjectData({
+                    ...projectData,
+                    media_path: e.target.files[0],
+                    media_type: "audio",
+                  });
+                }
+              }}
             />
             <button type="submit">Criar Projeto</button>
           </form>

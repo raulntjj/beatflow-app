@@ -68,7 +68,7 @@ export default function FeedLayout({
     <main className="flex flex-col h-screen">
       <div className="flex flex-1 overflow-hidden">
         {/* Barra Lateral */}
-        <NavbarDesktop />
+        <NavbarDesktop  />
         <NavbarMobile />
         <ScrollArea className="flex flex-1">
           <div className="h-full w-full flex flex-row justify-center items-stretch">
