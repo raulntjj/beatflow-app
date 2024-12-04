@@ -2,72 +2,26 @@ import { Heart } from 'lucide-react';
 import Link from 'next/link';
 import LogoNavbar from '../navbar-logo';
 import SearchUsers from '../search-users';
+import { useState } from 'react';
+import { FaHeart } from 'react-icons/fa';
 
 export default function NavbarHeader(){
-
-  const users = [
-    {
-      id: 1,
-      name: "Gustavim da 12",
-      username: "gustavimda12",
-      avatarSrc: "",
-    },
-    {
-      id: 2,
-      name: "Medina do B da Mirage",	
-      username: "medinamirage",
-      avatarSrc: "",
-    },
-    {
-      id: 3,
-      name: "Raul do DDos",
-      username: "raulntjj",
-      avatarSrc: "",
-    },
-    {
-      id: 4,
-      name: "Brunin VeryXit",
-      username: "bruninho",
-      avatarSrc: "",
-    },
-    {
-      id: 5,
-      name: "Brunin VeryXit",
-      username: "bruninho",
-      avatarSrc: "",
-    },
-    {
-      id: 6,
-      name: "Brunin VeryXit",
-      username: "bruninho",
-      avatarSrc: "",
-    },
-    {
-      id: 7,
-      name: "Brunin VeryXit",
-      username: "bruninho",
-      avatarSrc: "",
-    },
-    {
-      id: 8,
-      name: "Jonao Bazucador",
-      username: "reazew",
-      avatarSrc: "",
-    },
-  ];
   
+  const [activeTab, setActiveTab] = useState("home");
+
   return (
     <div className="fixed md:hidden inset-x-0 top-0 z-50 bg-background text-foreground">
       <div className="flex items-center justify-between gap-5 py-1 px-4 border-b border-zinc-700">
         <LogoNavbar />
         
         <div className="flex items-center space-x-2">
-          <SearchUsers users={users} />
+          <SearchUsers />
           <Link 
             href={`/notifications`}
             className={``}
+            onClick={() => setActiveTab("notifications")}
           >
-            <Heart className="tablet:mr-3 h-7 w-7" />
+           { activeTab === "projects" ? <FaHeart  className="tablet:mr-3 h-7 w-7" /> : <Heart className="tablet:mr-3 h-7 w-7" />}
           </Link>
         </div>
       </div>

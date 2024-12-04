@@ -1,10 +1,18 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserContext } from "@/context/user-context";
 import getToken from "@/utils/getToken";
+import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
+import { PiBroomFill } from "react-icons/pi";
+import { Button } from "../../components/ui/button";
+import { ScrollArea } from "../../components/ui/scroll-area";
 
 export default function Notifications() {
+  const pathname = usePathname(); 
   const userData = useContext(UserContext);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -59,78 +67,66 @@ export default function Notifications() {
     fetchNotifications();
   }, []);
 
-  const markAsRead = async (notificationId: number) => {
-    try {
-      const userToken = await getToken();
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/notifications/read/${notificationId}`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Erro ao marcar notificação como lida.");
-      }
-
-      setNotifications((prev) =>
-        prev.map((notification) =>
-          notification.id === notificationId
-            ? { ...notification, is_read: 1 }
-            : notification
-        )
-      );
-    } catch (err) {
-      console.error("Erro ao marcar notificação como lida:", err);
-    }
-  };
-
   return (
-    <div className="w-[600px]">
+    <div className="space-y-4 w-full max-w-[600px] mx-auto bg-background py-4">
       {loading ? (
         <p>Carregando notificações...</p>
       ) : (
-        <div className="flex flex-col space-y-4">
-          {notifications.length > 0 ? (
-            notifications.map((notification) => (
-              <div
-                key={notification.id}
-                className="flex items-center p-4 bg-gray-900 text-white"
-              >
-                {notification.user ? (
-                  <img
-                    src={notification.user.avatarSrc}
-                    alt={notification.user.name}
-                    className="w-10 h-10 rounded-full mr-4"
-                  />
-                ) : (
-                  <div className="w-10 h-10 bg-gray-300 rounded-full mr-4" />
-                )}
-                <div className="flex-1">
-                  {notification.user && (
-                    <p className="font-bold">{notification.user.name}</p>
-                  )}
-                  <p>{notification.content}</p>
-                  <p className="text-sm text-gray-400">
-                    {new Date(notification.created_at).toLocaleString()}
-                  </p>
+        <div className="flex flex-col bg-background">
+          <div className="px-4 pb-6 flex items-center justify-between">
+            {/* Exibe o Link apenas se estiver na rota /notifications */}
+            {pathname === "/notifications" && (
+              <Link href={`/`}>
+                <ChevronLeft className="w-7 h-7" />
+              </Link>
+            )}
+            <span className="text-2xl font-bold">Notificações</span>
+            <Button variant={"outline"} className="text-sm p-2">
+              <PiBroomFill />
+            </Button>
+          </div>
+          <ScrollArea className="h-full">
+            {notifications.length > 0 ? (
+              notifications.map((notification) => (
+                <div
+                  key={notification.id}
+                  className="flex items-center px-4 py-2 transition duration-200 hover:bg-zinc-800 cursor-pointer"
+                >
+                  <Avatar className="mr-4">
+                    <AvatarImage
+                      src={notification.user?.avatarSrc || ""}
+                      alt={notification.user?.name || ""}
+                    />
+                    <AvatarFallback>
+                      {notification.user?.name?.[0] || "?"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1">
+                    <div className="text-left space-y-1">
+                      {notification.user && (
+                        <a
+                          href={`/profile/${notification.user.id}`}
+                          className="cursor-pointer"
+                        >
+                          <span className="block text-sm font-semibold text-foreground">
+                            {notification.user.name}
+                          </span>
+                        </a>
+                      )}
+                      <span className="block text-xs text-foreground/70">
+                        {notification.content}
+                      </span>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(notification.created_at).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                {!notification.is_read && (
-                  <button
-                    onClick={() => markAsRead(notification.id)}
-                    className="text-blue-400"
-                  >
-                    Marcar como lida
-                  </button>
-                )}
-              </div>
-            ))
-          ) : (
-            <p>Nenhuma notificação encontrada.</p>
-          )}
+              ))
+            ) : (
+              <p>Nenhuma notificação encontrada.</p>
+            )}
+          </ScrollArea>
         </div>
       )}
     </div>

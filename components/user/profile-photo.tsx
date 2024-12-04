@@ -9,6 +9,8 @@ interface ProfilePhotoProps {
   size?: "small" | "medium" | "large";
   className?: string;
   fallbackIcon?: React.ReactNode;
+  profilePhoto?: string;
+  name?: string;
 }
 
 export default function ProfilePhoto({
