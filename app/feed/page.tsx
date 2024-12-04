@@ -88,7 +88,7 @@ export default function Feed() {
                 </article>
               ))
             ) : (
-              <p>Siga uma pessoa para que comecem a aparecer posts.</p>
+              <p>Nenhuma postagem.</p>
             )}
           </div>
         )}
