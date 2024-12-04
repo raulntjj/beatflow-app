@@ -67,6 +67,27 @@ export default function Notifications() {
     fetchNotifications();
   }, []);
 
+  const deleteNotifications = async () => {
+    try {
+      const userToken = await getToken();
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notifications/${userData.user.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+
+      if (response.ok) {
+        console.log("Notifications deleted successfully");
+      } else {
+        console.error("Failed to delete notifications:", response.statusText);
+      }
+    } catch (error) {
+      console.error("An error occurred while deleting notifications:", error);
+    }
+  };
+
   return (
     <div className="space-y-4 w-full max-w-[600px] mx-auto bg-background py-4">
       {loading ? (
@@ -81,7 +102,11 @@ export default function Notifications() {
               </Link>
             )}
             <span className="text-2xl font-bold">Notificações</span>
-            <Button variant={"outline"} className="text-sm p-2">
+            <Button
+              variant={"outline"}
+              className="text-sm p-2"
+              onClick={deleteNotifications}
+            >
               <PiBroomFill />
             </Button>
           </div>
