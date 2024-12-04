@@ -65,8 +65,7 @@ export default function RegisterForm() {
 
     try {
       const bio = null; // Definindo bio como null
-      const is_private = false; // Definindo is_private como false
-    
+
       // Simular envio dos dados
       const formDataToSend = new FormData();
       formDataToSend.append("name", formData.nome);
@@ -75,7 +74,7 @@ export default function RegisterForm() {
       formDataToSend.append("user", formData.usuario);
       formDataToSend.append("password", formData.senha);
       formDataToSend.append("password_confirmation", formData.confirmarSenha);
-      formDataToSend.append("is_private", is_private);
+      formDataToSend.append("is_private", 0);
       formDataToSend.append("bio", bio ?? "");
       if (selectedImage) {
         formDataToSend.append("image", selectedImage);
