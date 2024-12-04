@@ -1,10 +1,6 @@
-import { Button } from '@/components/ui/button';
-import { Home, MenuIcon, PlusSquare } from 'lucide-react';
+import { Home } from 'lucide-react';
 import Link from 'next/link';
-import { HiMiniUserGroup, HiOutlineUserGroup } from 'react-icons/hi2';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../../ui/dialog';
-import { FileUpload } from '../../ui/file-upload';
-import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
+import { HiOutlineUserGroup } from 'react-icons/hi2';
 import ProfilePhoto from '../../user/profile-photo';
 import CreatePost from '../../user/create-post';
 import PlusOptions from '../plus-options';
@@ -49,7 +45,7 @@ export default function NavbarMobileItems() {
         className="flex w-full justify-center tablet:justify-start items-center"
       >
         <ProfilePhoto 
-          src={userData?.profile_photo_temp}
+          src={userData?.profilePhoto}
           alt={userData?.name}
           className="tablet:mr-3"
         />
