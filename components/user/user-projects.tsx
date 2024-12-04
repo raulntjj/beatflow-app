@@ -5,6 +5,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CardContent, CardTitle } from "@/components/ui/card";
 import { UserContext } from "@/context/user-context";
 import Image from "next/image";
+import getToken from "@/utils/getToken";
 
 interface Post {
   id: string;
@@ -72,8 +73,35 @@ export default function UserProject({ post }: { post: Post }) {
   //   ...post.post.participants.map((participant) => participant.name),
   // ];
 
+  const deletePost = async () => {
+    const userToken = await getToken();
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${post.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+
+      if (res.ok) {
+        window.location.reload();
+      } else {
+        throw new Error("Failed to delete post");
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      alert("Ocorreu um erro ao deletar o post.");
+    }
+  };
+
+
   return (
     <div className="w-full mx-auto shadow-none border-0 rounded-none bg-background ">
+      {userId === post.post.user.id && (
+        <button onClick={deletePost} >Deletar Post</button>
+      )}
       <div className="p-0">
         <div className="flex items-center justify-between text-foreground">
           <div className="flex items-center gap-3">
