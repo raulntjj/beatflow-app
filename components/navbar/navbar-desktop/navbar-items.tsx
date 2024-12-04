@@ -1,52 +1,73 @@
-import { Heart, Home } from "lucide-react";
+import { Heart, Home, LogOut, MenuIcon, PlusSquare } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
-import {  HiOutlineUserGroup } from "react-icons/hi2";
+import { useContext, useState } from "react";
+import { HiMiniUserGroup, HiOutlineUserGroup } from "react-icons/hi2";
+import { Button } from "../../ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../../ui/dialog";
+import { FileUpload } from "../../ui/file-upload";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import ProfilePhoto from "../../user/profile-photo";
 import CreatePost from "../../user/create-post";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "../../ui/dropdown-menu";
 import PlusOptions from "../plus-options";
+import { UserContext } from "@/context/user-context";
 
 export default function NavbarItems() {
-
-  const [files, setFiles] = useState<File[]>([]);// eslint-disable-line @typescript-eslint/no-unused-vars
+  const [files, setFiles] = useState<File[]>([]); // eslint-disable-line @typescript-eslint/no-unused-vars
   const handleFileUpload = (files: File[]) => {
     setFiles(files);
     console.log(files);
   };
 
+  const userData = useContext(UserContext);
+
   const navbarItems = [
-    { icon: Home, label: 'Página inicial', href:"/" , key: 'home'  },
-    { icon: HiOutlineUserGroup, label:'Projetos', href:"/", key: 'projects' },
-    { icon: Heart, label: 'Notificações', href:"/", key: 'notifications' },
+    { icon: Home, label: "Página inicial", href: "/", key: "home" },
+    { icon: HiOutlineUserGroup, label: "Projetos", href: "/", key: "projects" },
+    { icon: Heart, label: "Notificações", href: "/", key: "notifications" },
   ];
 
-  const [activeTab, setActiveTab] = useState('home');
+  const [activeTab, setActiveTab] = useState("home");
 
   return (
     <nav className="h-full w-full flex flex-col justify-between space-y-7">
       <div className="flex flex-col space-y-7">
         {navbarItems.map((item) => (
-          <Link 
-            key={item.key} 
+          <Link
+            key={item.key}
             href={`/${item.href}`}
-            className={`flex w-full justify-center tablet:justify-start items-center ${activeTab === item.key ? 'secondary' : 'ghost'}`}
+            className={`flex w-full justify-center tablet:justify-start items-center ${
+              activeTab === item.key ? "secondary" : "ghost"
+            }`}
             onClick={() => setActiveTab(item.key)}
           >
             <item.icon className="tablet:mr-3 h-7 w-7" />
-            <span className="hidden tablet:block">
-              {item.label}
-            </span>
+            <span className="hidden tablet:block">{item.label}</span>
           </Link>
         ))}
         <CreatePost />
-        <Link href={`/profile/{user}`} className="flex w-full justify-center tablet:justify-start items-center" >
+        <Link
+          href={`/profile/` + userData?.user?.user}
+          className="flex w-full justify-center tablet:justify-start items-center"
+        >
           <ProfilePhoto src="" alt="" className="tablet:mr-3" />
-          <span className="hidden tablet:block">
-            Perfil
-          </span>
+          <span className="hidden tablet:block">Perfil</span>
         </Link>
       </div>
       <PlusOptions />
     </nav>
-  )
+  );
 }

@@ -1,12 +1,22 @@
 import { LogOut } from "lucide-react";
 import { DropdownMenuItem, DropdownMenuShortcut } from "../../ui/dropdown-menu";
+import { removeCookie } from "@/utils/removeCookie";
+import { redirect } from "next/navigation";
 
-export default function NavbarLogout(){
-  return(
+export default function NavbarLogout() {
+  const handleLogout = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    removeCookie();
+
+    redirect("/login");
+  };
+
+  return (
     <DropdownMenuItem className="text-foreground cursor-pointer">
       <LogOut />
-      <span>Sair</span>
+      <button onClick={handleLogout}>Sair</button>
       <DropdownMenuShortcut>⇧</DropdownMenuShortcut>
     </DropdownMenuItem>
-  )
+  );
 }

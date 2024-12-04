@@ -69,7 +69,6 @@ export default function Feed() {
   };
 
   return (
-
     <>
       <div className="w-full">
         {/* <h1>Olá {userData?.user?.name}</h1>
