@@ -142,7 +142,7 @@ export default function CreatePost() {
             />
             <FileUpload onChange={handleFileChange} />
             <div className="w-full flex">
-              (isPosting ? (<p className="p-4 text-foreground/70">Postando ...</p>) :
+              {isPosting ? (<p className="p-4 text-foreground/70">Postando ...</p>) :
               (
               <Button
                 type="submit"
@@ -151,7 +151,7 @@ export default function CreatePost() {
               >
                 Postar
               </Button>
-              ))
+              )}
             </div>
           </form>
         </div>
