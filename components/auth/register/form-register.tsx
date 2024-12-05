@@ -74,7 +74,6 @@ export default function RegisterForm() {
       formDataToSend.append("user", formData.usuario);
       formDataToSend.append("password", formData.senha);
       formDataToSend.append("password_confirmation", formData.confirmarSenha);
-      formDataToSend.append("is_private", 0);
       formDataToSend.append("bio", bio ?? "");
       if (selectedImage) {
         formDataToSend.append("image", selectedImage);
