@@ -10,7 +10,6 @@ import { useContext, useEffect, useState } from "react";
 import { PiBroomFill } from "react-icons/pi";
 import { Button } from "../../components/ui/button";
 import { ScrollArea } from "../../components/ui/scroll-area";
-import SearchUsers from "../../components/navbar/search-users";
 
 export default function Notifications() {
   const pathname = usePathname(); 
