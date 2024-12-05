@@ -5,12 +5,9 @@ import ProfilePhoto from "@/components/user/profile-photo";
 import getToken from "@/utils/getToken";
 import { UserContext } from "@/context/user-context";
 import UserPost from "@/components/user/user-post";
-import { Button } from "../../../components/ui/button";
-import { Separator } from "../../../components/ui/separator";
-import { Input } from "../../../components/ui/input";
-import { Textarea } from "../../../components/ui/textarea";
-import { FileInputIcon } from "lucide-react";
-import { FileUpload } from "../../../components/ui/file-upload";
+import { Button } from "../../../../components/ui/button";
+import { Input } from "../../../../components/ui/input";
+import { Textarea } from "../../../../components/ui/textarea";
 
 interface UserData {
   id: number;
