@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { saveCookie } from "@/utils/saveCookie";
 
 export default function RegisterForm() {
   const [formData, setFormData] = useState({
@@ -79,6 +80,10 @@ export default function RegisterForm() {
         formDataToSend.append("profile_photo_path", selectedImage);
       }
 
+      const formDataToSendLogin = new FormData();
+      formDataToSend.append("user", formData.usuario);
+      formDataToSend.append("password", formData.senha);
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
         method: "POST",
         body: formDataToSend,
@@ -90,9 +95,26 @@ export default function RegisterForm() {
           description: "Bem-vindo(a) ao nosso sistema!",
         });
 
-        setTimeout(() => {
-          router.push(`/`);
-        }, 2000);
+        const resLogin = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/login`,
+          {
+            method: "POST",
+            body: formDataToSendLogin,
+          }
+        );
+
+        const dataLogin = await resLogin.json();
+
+        if (resLogin.ok) {
+          saveCookie(dataLogin.response.access_token);
+          setTimeout(() => {
+            router.push(`/feed`);
+          }, 2000);
+        } else {
+          setTimeout(() => {
+            router.push(`/`);
+          }, 2000);
+        }
       } else {
         setErro(data.message || "Erro ao registrar usuário");
       }
@@ -113,7 +135,10 @@ export default function RegisterForm() {
       <h2 className="text-base font-semibold text-center mb-6">
         {step === 1 ? "Crie sua conta" : "Envie sua imagem"}
       </h2>
-      <form onSubmit={step === 1 ? handleNextStep : handleSubmit} className="space-y-4">
+      <form
+        onSubmit={step === 1 ? handleNextStep : handleSubmit}
+        className="space-y-4"
+      >
         {step === 1 && (
           <>
             {/* Etapa 1: Formulário de dados */}
