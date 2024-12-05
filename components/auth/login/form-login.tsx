@@ -17,7 +17,8 @@ export default function LoginForm() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    setIsLoading(true); 
+  
     const formData = new FormData(e.currentTarget);
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
@@ -29,28 +30,20 @@ export default function LoginForm() {
         }),
       });
       const data = await res.json();
-      saveCookie(data.response.access_token);
-      if (res?.ok) {
-        toast.success("Login realizado com sucesso.", {
-          description: "Bem-vindo ao BeatFlow!",
-        });
-
-        router.push("/feed");
-      } else {
-        toast.error("Erro ao fazer login.", {
-          description: data.message || "Verifique suas credenciais.",
-        });
-        redirect("/login");
-      } 
+  
+      if (res.ok) {
+        saveCookie(data.response.access_token);
+        router.push("/feed") 
+      }
     } catch (error) {
-        console.error("Erro no login:", error);
-        toast.error("Erro ao fazer login.", {
-          description: "Algo deu errado. Tente novamente mais tarde.",
-        });
-      } finally {
+      console.error("Erro no login:", error);
+      toast.error("Erro ao fazer login.", {
+        description: "Algo deu errado. Tente novamente mais tarde.",
+      });
+    } finally {
       setIsLoading(false);
     }
-  }
+  };
   return (
     <div className="w-full h-full max-w-md p-8 rounded-xl m-auto -translate-y-14">
       <BlurImage
@@ -87,8 +80,12 @@ export default function LoginForm() {
           </Link> */}
         </div>
 
-        <Button variant={"secondary"} className="w-full mt-4">
-        {isLoading ? (
+        <Button   
+          variant={"secondary"}
+          className="w-full mt-4"
+          disabled={isLoading} // Desativa enquanto está carregando
+        >
+          {isLoading ? (
             <FaSpinner className="animate-spin mr-2" />
           ) : (
             "Login"
