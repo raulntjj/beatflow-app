@@ -7,26 +7,26 @@ import { Input } from "../../ui/input";
 import { BlurImage } from "../../ui/blur-image";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner"; // Importando toast
-import { FaSpinner } from "react-icons/fa"; // Ícone de carregamento
+import { saveCookie } from "@/utils/saveCookie";
+import { toast } from "sonner";
+import { FaSpinner } from "react-icons/fa";
 
-export default function RegisterForm() {
-  const [isLoading, setIsLoading] = useState(false); // Estado de carregamento
+export default function LoginForm() {
+  const [isLoading, setIsLoading] = useState(false); 
   const router = useRouter();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true); // Ativar estado de carregamento
+    setIsLoading(true);
 
     const formData = new FormData(e.currentTarget);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          username: formData.get("username"),
-          email: formData.get("email"),
+          identifier: formData.get("identifier"),
           password: formData.get("password"),
         }),
       });
@@ -34,23 +34,25 @@ export default function RegisterForm() {
       const data = await res.json();
 
       if (res.ok) {
-        toast.success("Registro concluído com sucesso!", {
-          description: "Bem-vindo(a) ao BeatFlow!",
+        saveCookie(data.response.access_token);
+
+        toast.success("Login realizado com sucesso!", {
+          description: "Bem-vindo(a) ao nosso sistema!",
         });
 
-        router.push("/login"); // Redirecionar para a página de login
+        router.push("/feed");
       } else {
-        toast.error("Erro ao registrar.", {
-          description: data.message || "Verifique os dados fornecidos.",
+        toast.error("Erro ao fazer login.", {
+          description: data.message || "Verifique suas credenciais.",
         });
       }
     } catch (error) {
-      console.error("Erro no registro:", error);
-      toast.error("Erro ao registrar.", {
+      console.error("Erro no login:", error);
+      toast.error("Erro ao fazer login.", {
         description: "Algo deu errado. Tente novamente mais tarde.",
       });
     } finally {
-      setIsLoading(false); // Desativar estado de carregamento
+      setIsLoading(false);
     }
   };
 
@@ -61,28 +63,19 @@ export default function RegisterForm() {
         alt="logo"
         className="w-[130px] h-auto mx-auto mb-6"
       />
-      <h2 className="text-xl font-semibold text-center mb-6">Criar Conta</h2>
+      <h2 className="text-xl font-semibold text-center mb-6">Fazer login</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <Input
             type="text"
-            id="username"
-            placeholder="Nome de usuário"
+            id="identifier"
+            placeholder="Usuário ou e-mail"
             className="w-full"
-            name="username"
+            name="identifier"
             disabled={isLoading}
           />
         </div>
-        <div>
-          <Input
-            type="email"
-            id="email"
-            placeholder="E-mail"
-            className="w-full"
-            name="email"
-            disabled={isLoading}
-          />
-        </div>
+
         <div>
           <Input
             type="password"
@@ -92,6 +85,13 @@ export default function RegisterForm() {
             name="password"
             disabled={isLoading}
           />
+
+          <Link
+            href="/forgot-password"
+            className="text-sm text-foreground hover:underline block mt-2 text-right"
+          >
+            Esqueceu sua senha?
+          </Link>
         </div>
 
         <Button
@@ -102,14 +102,14 @@ export default function RegisterForm() {
           {isLoading ? (
             <FaSpinner className="animate-spin mr-2" />
           ) : (
-            "Registrar"
+            "Login"
           )}
         </Button>
 
         <div className="text-center text-sm mt-4">
-          Já possui uma conta?{" "}
-          <Link href="/login" className="text-primary hover:underline">
-            Faça login
+          Não possui conta?{" "}
+          <Link href="/register" className="text-primary hover:underline">
+            Cadastre-se
           </Link>
         </div>
       </form>

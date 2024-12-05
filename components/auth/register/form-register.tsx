@@ -8,7 +8,7 @@ import { logo1 } from "../../../public";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
+import { toast } from "sonner"; // Importando toast
 import { saveCookie } from "@/utils/saveCookie";
 
 export default function RegisterForm() {
@@ -107,18 +107,30 @@ export default function RegisterForm() {
 
         if (resLogin.ok) {
           saveCookie(dataLogin.response.access_token);
+          toast.success("Login automático realizado!", {
+            description: "Você será redirecionado(a) em instantes.",
+          });
           setTimeout(() => {
             router.push(`/feed`);
           }, 2000);
         } else {
+          toast.error("Erro ao realizar login automático.", {
+            description: "Por favor, faça login manualmente.",
+          });
           setTimeout(() => {
             router.push(`/`);
           }, 2000);
         }
       } else {
+        toast.error("Erro ao registrar usuário.", {
+          description: data.message || "Tente novamente mais tarde.",
+        });
         setErro(data.message || "Erro ao registrar usuário");
       }
     } catch {
+      toast.error("Erro ao conectar com o servidor.", {
+        description: "Tente novamente mais tarde.",
+      });
       setErro("Erro ao conectar com o servidor");
     } finally {
       setLoading(false);
