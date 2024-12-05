@@ -6,6 +6,9 @@ import { CardContent, CardTitle } from "@/components/ui/card";
 import { UserContext } from "@/context/user-context";
 import Image from "next/image";
 import getToken from "@/utils/getToken";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuShortcut, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { SlOptions } from "react-icons/sl";
+import { MdOutlineDelete } from "react-icons/md";
 
 interface Post {
   id: string;
@@ -33,10 +36,6 @@ interface Post {
 export default function UserProject({ post }: { post: Post }) {
   const userData = useContext(UserContext);
   const userId = userData?.user?.id;
-  // console.log(userData);
-  // console.log(post);
-
-  // Função para formatar a data
   const formatDate = (createdAt: string) => {
     const postDate = new Date(createdAt);
     const now = new Date();
@@ -67,11 +66,6 @@ export default function UserProject({ post }: { post: Post }) {
     }
   };
 
-  // Criar lista de participantes incluindo o criador
-  // const participants = [
-  //   post.post.user.user,
-  //   ...post.post.participants.map((participant) => participant.name),
-  // ];
 
   const deletePost = async () => {
     const userToken = await getToken();
@@ -99,29 +93,41 @@ export default function UserProject({ post }: { post: Post }) {
 
   return (
     <div className="w-full mx-auto shadow-none border-0 rounded-none bg-background ">
-      {userId?.toString() == post.post.user.id && (
-        <button onClick={deletePost} >Deletar Post</button>
-      )}
       <div className="p-0">
         <div className="flex items-center justify-between text-foreground">
           <div className="flex items-center gap-3">
-            <a href={`/profile/${post.post.user.user}`} className="cursor-pointer">
+            <a href={`/profile/${post.post.user.user}`} className="cursor-pointer flex justify-center items-center gap-3">
               <Avatar>
                 <AvatarImage src={post.post.user.profile_photo_temp} />
                 <AvatarFallback>
                   {post.post.user.user.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-            </a>
-            <a href={`/profile/${post.post.user.user}`} className="cursor-pointer">
               <CardTitle className="text-sm font-medium">
-                {post.post.user.name}
+                {post.post.user.user}
               </CardTitle>
             </a>
           </div>
-          <span className="text-xs text-gray-500">
-            {formatDate(post.post.created_at)}
-          </span>
+          <div className="w-full flex items-end gap-4">
+            <span className="w-full text-right text-xs text-gray-500">
+              {formatDate(post.post.created_at)}
+            </span>
+            {userId?.toString() == post.post.user.id && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex w-fit justify-center tablet:justify-end items-center">
+                    <SlOptions className="w-4 h-4" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="tablet:w-[200px] bg-background border-zinc-700 p-2">
+                  <DropdownMenuItem className="text-foreground cursor-pointer">
+                    <MdOutlineDelete className="" />
+                    <button onClick={deletePost} >Deletar Post</button>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
         </div>
       </div>
       <div className="ml-[19px] pl-5 pb-10 mt-1 border-l-[2px] border-zinc-700">
@@ -140,27 +146,28 @@ export default function UserProject({ post }: { post: Post }) {
             </audio>
           </div>
           <CardContent className="p-0">
-            <div className="mb-4">
+            <div className="my-4">
               <span>{post.post.content}</span>
             </div>
             {post.post.participants.length > 0 && (
-              <div className="mt-4">
-                <span className="text-sm font-medium">Participantes:</span>
-                <ul className="space-y-2">
+              <div className="mt-4 space-y-2">
+                <span className="text-sm font-medium text-foreground">Participantes:</span>
+                <ul className="space-y-3">
                   {post.post.participants.map((participant) => (
                     <li
                       key={participant.id}
                       className="flex items-center gap-3 text-xs text-gray-600"
                     >
-                      <a href={`/profile/${participant.user}`} className="cursor-pointer">
+                      <a href={`/profile/${participant.user}`} className="flex justify-center items-center gap-2">
                         <img
                           src={participant.avatarSrc}
                           alt={`${participant.name}'s avatar`}
                           className="w-8 h-8 rounded-full"
                         />
-                      </a>
-                      <a href={`/profile/${participant.user}`} className="cursor-pointer">
-                        {participant.name}
+                        <span className="text-sm text-foreground/70">
+
+                         {participant.name}
+                        </span>
                       </a>
                     </li>
                   ))}
