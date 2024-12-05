@@ -21,6 +21,7 @@ export default function CreatePost() {
   const userData = useContext(UserContext);
   const userId = userData?.user?.id;
   const userUser = userData?.user?.user;
+  const [isPosting, setIsPosting] = useState(false);
 
   const [formData, setFormData] = useState({
     content: "",
@@ -49,6 +50,8 @@ export default function CreatePost() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    setIsPosting(true);
 
     if (!userId || !userUser) {
       console.error("User data is missing");
@@ -109,6 +112,8 @@ export default function CreatePost() {
     } catch (err) {
       console.error("Erro na requisição:", err);
       toast.error("Erro na requisição.");
+    } finally {
+      setIsPosting(false);
     }
   };
 
@@ -137,6 +142,8 @@ export default function CreatePost() {
             />
             <FileUpload onChange={handleFileChange} />
             <div className="w-full flex">
+              (isPosting ? (<p className="p-4 text-foreground/70">Postando ...</p>) :
+              (
               <Button
                 type="submit"
                 variant="outline"
@@ -144,6 +151,7 @@ export default function CreatePost() {
               >
                 Postar
               </Button>
+              ))
             </div>
           </form>
         </div>
