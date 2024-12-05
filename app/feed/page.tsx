@@ -5,7 +5,7 @@ import { UserContext } from "@/context/user-context";
 import getToken from "@/utils/getToken";
 import UserPost from "@/components/user/user-post";
 import { redirect } from "next/navigation";
-import SearchUsers from "../../components/navbar/search-users";
+
 import { Skeleton } from "../../components/ui/skeleton";
 
 type Post = {

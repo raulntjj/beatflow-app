@@ -254,7 +254,7 @@ export default function CreateProjects() {
               />
             </div>
             <div className="w-full flex">
-              (isPosting ? (<p className="p-4 text-foreground/70">Postando ...</p>) :
+              {isPosting ? (<p className="p-4 text-foreground/70">Postando ...</p>) :
               (
               <Button
                 type="submit"
@@ -263,7 +263,7 @@ export default function CreateProjects() {
               >
                 Postar Projeto
               </Button>
-               ))
+               )}
             </div>
           </form>
         </div>
