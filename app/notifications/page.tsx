@@ -81,6 +81,7 @@ export default function Notifications() {
       if (response.ok) {
         console.log("Notifications deleted successfully");
       } else {
+        setNotifications([]);
         console.error("Failed to delete notifications:", response.statusText);
       }
     } catch (error) {
@@ -92,7 +93,7 @@ export default function Notifications() {
     <>
       <div className="space-y-4 w-full max-w-[600px] mx-auto bg-background py-4">
         {loading ? (
-          <p>Carregando notificações...</p>
+          <p className="px-4">Carregando notificações...</p>
         ) : (
           <div className="flex flex-col bg-background">
             <div className="px-4 pb-6 flex items-center justify-between">

@@ -51,7 +51,6 @@ export default function LoginForm() {
       setIsLoading(false);
     }
   }
-  
   return (
     <div className="w-full h-full max-w-md p-8 rounded-xl m-auto -translate-y-14">
       <BlurImage
@@ -79,13 +78,13 @@ export default function LoginForm() {
             className="w-full"
             name="password"
           />
-
+{/* 
           <Link
             href="/forgot-password"
             className="text-sm text-foreground  hover:underline block mt-2 text-right"
           >
             Esqueceu sua senha?
-          </Link>
+          </Link> */}
         </div>
 
         <Button variant={"secondary"} className="w-full mt-4">
