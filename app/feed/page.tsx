@@ -4,9 +4,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/context/user-context";
 import getToken from "@/utils/getToken";
 import UserPost from "@/components/user/user-post";
-import { redirect } from "next/navigation";
-
-import { Skeleton } from "../../components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Post = {
   id: string;
@@ -29,187 +27,100 @@ type ApiResponse = {
   };
 };
 
+const FeedSkeleton = () => (
+  <div className="space-y-4">
+    {[...Array(4)].map((_, index) => (
+      <div
+        key={index}
+        className="w-full mx-auto shadow-none border-0 rounded-none bg-background"
+      >
+        <div className="p-0">
+          <div className="flex items-center justify-between text-foreground">
+            <div className="flex items-center gap-3">
+              <Skeleton className="w-10 h-10 rounded-full" />
+              <div>
+                <Skeleton className="w-32 h-4 mb-2" />
+                <Skeleton className="w-24 h-3" />
+              </div>
+            </div>
+            <Skeleton className="w-16 h-3" />
+          </div>
+        </div>
+        <div className="ml-[19px] pl-5 pb-10 mt-1 border-l-[2px] border-zinc-700">
+          <Skeleton className="w-full h-64 rounded-lg mb-4" />
+          <Skeleton className="w-3/4 h-4 mb-4" />
+          <Skeleton className="w-1/2 h-4 mb-4" />
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
 export default function Feed() {
   const userData = useContext(UserContext);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
+        setIsLoading(true);
         const userToken = await getToken();
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/me/feed`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${userToken}`,
-          },
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/me/feed`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${userToken}`,
+            },
+          }
+        );
 
-        if (!res.ok) {
-          throw new Error("Erro ao retornar posts.");
+        if (!response.ok) {
+          throw new Error("Failed to fetch posts");
         }
 
-        const data: ApiResponse = await res.json();
-
-        // Usando o tipo `ApiResponse` e mapeando corretamente os dados
+        const data: ApiResponse = await response.json();
         setPosts(data.response.data);
+        setError(null);
       } catch (err) {
-        console.error("Erro ao buscar posts:", err);
+        console.error("Error fetching posts:", err);
         setPosts([]);
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred"
+        );
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchPosts();
   }, []);
 
-  const handleRedirect = () => {
-    redirect("/profile/" + userData?.user?.user);
-  };
+  if (isLoading) {
+    return <FeedSkeleton />;
+  }
+
+  if (error) {
+    return <div className="w-full text-center text-red-500 p-4">{error}</div>;
+  }
 
   return (
-    <>
-      <div className="w-full">
-      {loading ? (
-        <div className="space-y-4">
-          <div className="w-full mx-auto shadow-none border-0 rounded-none bg-background">
-            <div className="p-0">
-              <div className="flex items-center justify-between text-foreground">
-                <div className="flex items-center gap-3">
-                  <Skeleton className="w-10 h-10 rounded-full" />
-                  <div>
-                    <Skeleton className="w-32 h-4 mb-2" />
-                    <Skeleton className="w-24 h-3" />
-                  </div>
-                </div>
-                <Skeleton className="w-16 h-3" />
-              </div>
-            </div>
-            <div className="ml-[19px] pl-5 pb-10 mt-1 border-l-[2px] border-zinc-700">
-              <Skeleton className="w-full h-64 rounded-lg mb-4" />
-              <Skeleton className="w-3/4 h-4 mb-4" />
-              <Skeleton className="w-1/2 h-4 mb-4" />
-              <div className="mt-4 space-y-2">
-                <Skeleton className="w-1/4 h-4" />
-                <div className="flex items-center gap-3">
-                  <Skeleton className="w-8 h-8 rounded-full" />
-                  <Skeleton className="w-32 h-3" />
-                </div>
-                <div className="flex items-center gap-3">
-                  <Skeleton className="w-8 h-8 rounded-full" />
-                  <Skeleton className="w-32 h-3" />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="w-full mx-auto shadow-none border-0 rounded-none bg-background">
-            <div className="p-0">
-              <div className="flex items-center justify-between text-foreground">
-                <div className="flex items-center gap-3">
-                  <Skeleton className="w-10 h-10 rounded-full" />
-                  <div>
-                    <Skeleton className="w-32 h-4 mb-2" />
-                    <Skeleton className="w-24 h-3" />
-                  </div>
-                </div>
-                <Skeleton className="w-16 h-3" />
-              </div>
-            </div>
-            <div className="ml-[19px] pl-5 pb-10 mt-1 border-l-[2px] border-zinc-700">
-              <Skeleton className="w-full h-64 rounded-lg mb-4" />
-              <Skeleton className="w-3/4 h-4 mb-4" />
-              <Skeleton className="w-1/2 h-4 mb-4" />
-              <div className="mt-4 space-y-2">
-                <Skeleton className="w-1/4 h-4" />
-                <div className="flex items-center gap-3">
-                  <Skeleton className="w-8 h-8 rounded-full" />
-                  <Skeleton className="w-32 h-3" />
-                </div>
-                <div className="flex items-center gap-3">
-                  <Skeleton className="w-8 h-8 rounded-full" />
-                  <Skeleton className="w-32 h-3" />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="w-full mx-auto shadow-none border-0 rounded-none bg-background">
-            <div className="p-0">
-              <div className="flex items-center justify-between text-foreground">
-                <div className="flex items-center gap-3">
-                  <Skeleton className="w-10 h-10 rounded-full" />
-                  <div>
-                    <Skeleton className="w-32 h-4 mb-2" />
-                    <Skeleton className="w-24 h-3" />
-                  </div>
-                </div>
-                <Skeleton className="w-16 h-3" />
-              </div>
-            </div>
-            <div className="ml-[19px] pl-5 pb-10 mt-1 border-l-[2px] border-zinc-700">
-              <Skeleton className="w-full h-64 rounded-lg mb-4" />
-              <Skeleton className="w-3/4 h-4 mb-4" />
-              <Skeleton className="w-1/2 h-4 mb-4" />
-              <div className="mt-4 space-y-2">
-                <Skeleton className="w-1/4 h-4" />
-                <div className="flex items-center gap-3">
-                  <Skeleton className="w-8 h-8 rounded-full" />
-                  <Skeleton className="w-32 h-3" />
-                </div>
-                <div className="flex items-center gap-3">
-                  <Skeleton className="w-8 h-8 rounded-full" />
-                  <Skeleton className="w-32 h-3" />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="w-full mx-auto shadow-none border-0 rounded-none bg-background">
-            <div className="p-0">
-              <div className="flex items-center justify-between text-foreground">
-                <div className="flex items-center gap-3">
-                  <Skeleton className="w-10 h-10 rounded-full" />
-                  <div>
-                    <Skeleton className="w-32 h-4 mb-2" />
-                    <Skeleton className="w-24 h-3" />
-                  </div>
-                </div>
-                <Skeleton className="w-16 h-3" />
-              </div>
-            </div>
-            <div className="ml-[19px] pl-5 pb-10 mt-1 border-l-[2px] border-zinc-700">
-              <Skeleton className="w-full h-64 rounded-lg mb-4" />
-              <Skeleton className="w-3/4 h-4 mb-4" />
-              <Skeleton className="w-1/2 h-4 mb-4" />
-              <div className="mt-4 space-y-2">
-                <Skeleton className="w-1/4 h-4" />
-                <div className="flex items-center gap-3">
-                  <Skeleton className="w-8 h-8 rounded-full" />
-                  <Skeleton className="w-32 h-3" />
-                </div>
-                <div className="flex items-center gap-3">
-                  <Skeleton className="w-8 h-8 rounded-full" />
-                  <Skeleton className="w-32 h-3" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : (
-          <div className="relative flex flex-col space-y-10">
-            {posts.length > 0 ? (
-              posts.map((post) => (
-                <article key={post.id} className="w-full">
-                  <UserPost post={post} />
-                </article>
-              ))
-            ) : (
-              <p>Nenhuma postagem.</p>
-            )}
-          </div>
+    <div className="w-full">
+      <div className="relative flex flex-col space-y-10">
+        {posts.length > 0 ? (
+          posts.map((post) => (
+            <article key={post.id} className="w-full">
+              <UserPost post={post} />
+            </article>
+          ))
+        ) : (
+          <p className="text-center text-gray-500">No posts available</p>
         )}
       </div>
-    </>
+    </div>
   );
 }
