@@ -3,7 +3,7 @@
 import { useState } from "react";
 import LogoNavbar from "../navbar-logo";
 import NavbarItems from "./navbar-items";
-import Notifications from "../../../app/notifications/page";
+import Notifications from "../../../app/(authenticated)/notifications/page";
 
 export default function NavbarDesktop() {
   const [isOpen, setIsOpen] = useState(false); // Estado movido para o componente pai

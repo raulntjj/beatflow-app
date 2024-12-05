@@ -2,8 +2,9 @@
 
 import { motion } from 'framer-motion';
 import Image from "next/image";
-import { logo1 } from '../../../public';
-import { projectName } from '../../../utils/constants';
+import { logo1 } from '../../public';
+import { projectName } from '../../utils/constants';
+
 
 export default function Loading() {
   return (

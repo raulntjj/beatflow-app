@@ -4,9 +4,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/context/user-context";
 import getToken from "@/utils/getToken";
 import UserProjects from "@/components/user/user-projects";
-import SearchUsers from "@/components/navbar/search-users-projects";
-import SearchUsersProjects from "@/components/navbar/search-users-projects";
-import { Skeleton } from "../../components/ui/skeleton";
+import { Skeleton } from "../../../components/ui/skeleton";
 
 export default function Projects() {
   const userData = useContext(UserContext);
