@@ -155,7 +155,7 @@ export default function UserPost({ post }: { post: Post }) {
 
   return (
     <div className="w-full mx-auto shadow-none border-0 rounded-none bg-background">
-      {userId === post.post.user.id && (
+      {userId?.toString() == post.post.user.id && (
         <button onClick={deletePost} >Deletar Post</button>
       )}
       <div className="p-0">

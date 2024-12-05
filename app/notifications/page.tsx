@@ -70,7 +70,7 @@ export default function Notifications() {
   const deleteNotifications = async () => {
     try {
       const userToken = await getToken();
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notifications/${userData.user.id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notifications/${userData?.user?.id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
