@@ -76,7 +76,7 @@ export default function RegisterForm() {
       formDataToSend.append("password_confirmation", formData.confirmarSenha);
       formDataToSend.append("bio", bio ?? "");
       if (selectedImage) {
-        formDataToSend.append("image", selectedImage);
+        formDataToSend.append("profile_photo_path", selectedImage);
       }
 
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
@@ -213,7 +213,7 @@ export default function RegisterForm() {
               <Input
                 type="file"
                 id="image"
-                name="image"
+                name="profile_photo_path"
                 onChange={handleImageChange}
                 accept="image/*"
                 className="block w-full text-sm text-gray-300 bg-zinc-800 border border-zinc-700 rounded-lg cursor-pointer focus:ring-blue-500 focus:border-blue-500"
