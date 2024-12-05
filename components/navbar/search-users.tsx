@@ -112,7 +112,7 @@ export default function SearchUsers() {
       {isDropdownVisible && (
         <div className="absolute top-full left-0 w-full bg-background border-[2px] border-zinc-700 shadow-lg rounded-md overflow-hidden z-20">
           {isLoading ? (
-            <p className="p-4 text-gray-500">Carregando...</p>
+            <p className="p-4 text-gray-500">Buscando...</p>
           ) : filteredUsers.length > 0 ? (
             <ScrollArea className="h-full">
               <div className="max-h-64">
