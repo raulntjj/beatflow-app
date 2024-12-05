@@ -30,8 +30,9 @@ export default function LoginForm() {
     saveCookie(data.response.access_token);
 
     if (res?.ok) {
-      router.push("/feed");
-    } else {
+      window.location.href = "/feed";
+    }
+     else {
       redirect("/login");
     }
   };

@@ -108,7 +108,7 @@ export default function RegisterForm() {
         if (resLogin.ok) {
           saveCookie(dataLogin.response.access_token);
           setTimeout(() => {
-            router.push(`/feed`);
+            window.location.href = "/feed";
           }, 2000);
         } else {
           setTimeout(() => {
