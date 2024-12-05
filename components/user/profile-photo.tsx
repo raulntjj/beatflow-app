@@ -6,7 +6,7 @@ import { UserContext } from "@/context/user-context";
 interface ProfilePhotoProps {
   src: string;
   alt: string;
-  size?: "small" | "medium" | "large";
+  size?: "small" | "medium" | "large" | "profile";
   className?: string;
   fallbackIcon?: React.ReactNode;
   profilePhoto?: string;
@@ -24,6 +24,7 @@ export default function ProfilePhoto({
     small: "w-7 h-7",
     medium: "w-12 h-12",
     large: "w-16 h-16",
+    profile: "w-36 h-36",
   };
 
   const userData = useContext(UserContext);
