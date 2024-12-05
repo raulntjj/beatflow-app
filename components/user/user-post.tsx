@@ -5,6 +5,9 @@ import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { UserContext } from "@/context/user-context";
 import getToken from "@/utils/getToken";
 import Image from "next/image";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { SlOptions } from "react-icons/sl";
+import { MdOutlineDeleteForever } from "react-icons/md";
 
 interface Post {
   id: string;
@@ -155,9 +158,6 @@ export default function UserPost({ post }: { post: Post }) {
 
   return (
     <div className="w-full mx-auto shadow-none border-0 rounded-none bg-background">
-      {userId?.toString() == post.post.user.id && (
-        <button onClick={deletePost} >Deletar Post</button>
-      )}
       <div className="p-0">
         <div className="flex items-center justify-between text-foreground">
           <div className="flex items-center gap-3">
@@ -175,9 +175,26 @@ export default function UserPost({ post }: { post: Post }) {
               </CardTitle>
             </a>
           </div>
-          <span className="text-xs text-gray-500">
-            {formatDate(post.post.created_at)}
-          </span>
+          <div className="w-full flex items-end gap-4">
+            <span className="w-full text-right text-xs text-gray-500">
+              {formatDate(post.post.created_at)}
+            </span>
+            {userId?.toString() == post.post.user.id && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex w-fit justify-center tablet:justify-end items-center">
+                    <SlOptions className="w-4 h-4" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="tablet:w-[200px] bg-background border-zinc-700 p-2">
+                  <DropdownMenuItem className="text-foreground cursor-pointer">
+                    <MdOutlineDeleteForever className="" />
+                    <button onClick={deletePost} >Deletar Post</button>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
         </div>
       </div>
       <div className="ml-[19px] pl-5 pb-10 mt-1 border-l-[2px] border-zinc-700">

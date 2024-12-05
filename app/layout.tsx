@@ -85,7 +85,7 @@ export default async function RootLayout({
                         <div className="hidden md:block">
                           <SearchUsers />
                         </div>
-                        <div className="container mx-auto mt-[70px] tablet:mt-0 p-4 overflow-x-hidden">{children}</div>
+                        <div className="container mx-auto mt-[70px] md:mt-0 p-4 overflow-x-hidden">{children}</div>
                       </div>
                     </div>
                     <ProfileNavbar />

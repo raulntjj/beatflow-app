@@ -12,7 +12,7 @@ export default function NavbarDesktop() {
     <aside className="relative hidden md:block tablet:w-fit xl:w-[244px]">
       <div className="relative z-50 h-full p-1 tablet:p-4 bg-background border-r-[2px] border-zinc-700 ">
         <div className="relative z-10 h-full w-full flex flex-col px-3 pt-2 pb-5">
-          <div className="py-6 tablet:pb-6 mb-5">
+          <div className="pb-6 tablet:pb-6 mb-5">
             <LogoNavbar />
           </div>
           {/* Passando o estado e a função para o NavbarItems */}
