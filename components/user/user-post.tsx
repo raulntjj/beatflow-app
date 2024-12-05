@@ -5,7 +5,12 @@ import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { UserContext } from "@/context/user-context";
 import getToken from "@/utils/getToken";
 import Image from "next/image";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import { SlOptions } from "react-icons/sl";
 import { MdOutlineDeleteForever } from "react-icons/md";
 
@@ -35,6 +40,7 @@ export default function UserPost({ post }: { post: Post }) {
   const [likesCount, setLikesCount] = useState(0);
   const userData = useContext(UserContext);
   const userId = userData?.user?.id;
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const getEngagements = async () => {
     try {
@@ -95,10 +101,14 @@ export default function UserPost({ post }: { post: Post }) {
   };
 
   const handleLike = async () => {
+    if (isProcessing) return; // Bloqueia múltiplos cliques
+    setIsProcessing(true); // Inicia o processamento
+
     const userToken = await getToken();
 
     try {
       if (liked) {
+        if (likesCount <= 0) return; // Impede decremento abaixo de 0
         await fetch(`${process.env.NEXT_PUBLIC_API_URL}/post-engagements`, {
           method: "DELETE",
           headers: {
@@ -111,7 +121,7 @@ export default function UserPost({ post }: { post: Post }) {
             type: "like",
           }),
         });
-        setLikesCount((prev) => prev - 1);
+        setLikesCount((prev) => Math.max(prev - 1, likesCount - 1));
       } else {
         await fetch(`${process.env.NEXT_PUBLIC_API_URL}/post-engagements`, {
           method: "POST",
@@ -125,11 +135,13 @@ export default function UserPost({ post }: { post: Post }) {
             type: "like",
           }),
         });
-        setLikesCount((prev) => prev + 1);
+        setLikesCount((prev) => Math.min(prev + 1, likesCount + 1));
       }
-      setLiked(!liked);
+      setLiked(!liked); // Atualiza o estado do like
     } catch (error) {
       console.error("Error toggling like:", error);
+    } finally {
+      setIsProcessing(false); // Finaliza o processamento
     }
   };
 
@@ -137,13 +149,16 @@ export default function UserPost({ post }: { post: Post }) {
     const userToken = await getToken();
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${post.id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/posts/${post.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
 
       if (res.ok) {
         window.location.reload();
@@ -161,7 +176,10 @@ export default function UserPost({ post }: { post: Post }) {
       <div className="p-0">
         <div className="flex items-center justify-between text-foreground">
           <div className="flex items-center gap-3">
-            <a href={`/profile/${post.post.user.user}`} className="cursor-pointer">
+            <a
+              href={`/profile/${post.post.user.user}`}
+              className="cursor-pointer"
+            >
               <Avatar>
                 <AvatarImage src={post.post.user.profile_photo_temp} />
                 <AvatarFallback>
@@ -169,7 +187,10 @@ export default function UserPost({ post }: { post: Post }) {
                 </AvatarFallback>
               </Avatar>
             </a>
-            <a href={`/profile/${post.post.user.user}`} className="cursor-pointer">
+            <a
+              href={`/profile/${post.post.user.user}`}
+              className="cursor-pointer"
+            >
               <CardTitle className="text-sm font-medium">
                 {post.post.user.user}
               </CardTitle>
@@ -189,7 +210,7 @@ export default function UserPost({ post }: { post: Post }) {
                 <DropdownMenuContent className="tablet:w-[200px] bg-background border-zinc-700 p-2">
                   <DropdownMenuItem className="text-foreground cursor-pointer">
                     <MdOutlineDeleteForever className="" />
-                    <button onClick={deletePost} >Deletar Post</button>
+                    <button onClick={deletePost}>Deletar Post</button>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
