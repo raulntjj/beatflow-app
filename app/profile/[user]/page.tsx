@@ -204,9 +204,9 @@ export default function Profile({
   return (
     <div className="flex flex-col justify-center items-center gap-5">
       <div className="w-full flex flex-col justify-center items-center gap-5">
-        <div className="w-full  flex justify-center items-center gap-5">
-          <ProfilePhoto size="profile" src={userData?.profile_photo_temp} alt={userData?.name} />
-          <div className="flex justify-start flex-col gap-5">
+        <div className="lg:grid lg:grid-cols-3 flex w-full justify-start items-center gap-5">
+          <ProfilePhoto className="col-span-1 w-20 h-20 sm:w-28 sm:h-28 lg:w-36 lg:h-36" src={userData?.profile_photo_temp} alt={userData?.name} />
+          <div className="col-span-2 flex justify-start flex-col gap-5">
             <div className="flex justify-start items-center gap-5">
               <p className="text-lg">{userData?.user}</p> 
               {!isSameUser && (
@@ -236,8 +236,6 @@ export default function Profile({
             Postagens
           </span>
           <span className="w-full h-full border border-zinc-700" />
-
-          <span/>
         </div>
       </div>
 
