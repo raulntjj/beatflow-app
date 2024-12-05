@@ -1,26 +1,40 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/context/user-context";
+import { Button } from "../ui/button";
 import getToken from "@/utils/getToken";
-import UserProject from "@/components/user/user-projects";
-import SearchUsers from "@/components/navbar/search-users-projects";
-import SearchUsersProjects from "@/components/navbar/search-users-projects";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { AudioUploadProjects } from "./audio-upload-projects";
+import { ImageUploadProjects } from "./image-upload-projects";
+import { LucideDisc3 } from "lucide-react";
+import SearchUsersProjects from "../navbar/search-users-projects";
+import { toast } from "sonner"; // Adicionado para notificações
+import { FaCheck } from "react-icons/fa";
 
-export default function Projects() {
+export default function CreateProjects() {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const userData = useContext(UserContext);
   const [posts, setPosts] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedUsers, setSelectedUsers] = useState<any[]>([]); // Usuários selecionados para o projeto
+  const [selectedUsers, setSelectedUsers] = useState<any[]>([]);
   const [projectData, setProjectData] = useState({
     name: "",
     title: "",
     content: "",
-    cover_path: null as File | null, // Alterado para cover_path
-    cover_pathType: "", // Alterado para cover_pathType
-    media_path: null as File | null, // Novo campo para o arquivo de áudio
-    media_type: "audio", // Novo campo para o tipo de áudio
+    cover_path: null as File | null,
+    cover_pathType: "",
+    media_path: null as File | null,
+    media_type: "audio",
   });
 
   useEffect(() => {
@@ -130,13 +144,11 @@ export default function Projects() {
     formData.append("content", projectData.content);
 
     if (projectData.cover_path) {
-      // Manter o nome do arquivo corretamente
       formData.append("cover_path", projectData.cover_path);
       formData.append("cover_pathType", projectData.cover_pathType);
     }
 
     if (projectData.media_path) {
-      // Manter o nome do arquivo corretamente
       formData.append("media_path", projectData.media_path);
       formData.append("media_type", projectData.media_type);
     }
@@ -146,8 +158,6 @@ export default function Projects() {
       "participants",
       JSON.stringify(selectedUsers.map((user) => user.id))
     );
-
-    console.log(formData);
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`, {
@@ -163,29 +173,92 @@ export default function Projects() {
       }
 
       const data = await res.json();
+      toast.success("Projeto criado com sucesso!", {
+        action: {
+          label: <FaCheck className="text-green-600 h-5 w-5" />,
+          onClick: () => {},
+        },
+      });
+
+      setIsDialogOpen(false); // Fecha o diálogo
+      setProjectData({
+        name: "",
+        title: "",
+        content: "",
+        cover_path: null,
+        cover_pathType: "",
+        media_path: null,
+        media_type: "audio",
+      }); // Reseta os formulários
+      setSelectedUsers([]); // Limpa os usuários selecionados
+
       console.log("Projeto criado com sucesso:", data);
     } catch (err) {
       console.error("Erro ao criar projeto:", err);
+      toast.error("Erro ao criar o projeto.");
     }
   };
 
   return (
-    <div className="w-[600px]">
-      {loading ? (
-        <p>Carregando projetos...</p>
-      ) : (
-        <div className="relative flex flex-col space-y-10">
-          {posts.length > 0 ? (
-            posts.map((post) => (
-              <article key={post.id} className="w-full">
-                <UserProject post={post} />
-              </article>
-            ))
-          ) : (
-            <p>Nenhuma postagem.</p>
-          )}
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DialogTrigger className="flex w-full justify-center tablet:justify-start items-center">
+        <LucideDisc3 className="tablet:mr-3 h-7 w-7" />
+        <span className="hidden tablet:block">Criar Projeto</span>
+      </DialogTrigger>
+      <DialogContent className="border-zinc-700 bg-background w-full">
+        <DialogHeader>
+          <DialogTitle className="text-center">Criar novo projeto</DialogTitle>
+        </DialogHeader>
+        <SearchUsersProjects
+          users={users}
+          selectedUsers={selectedUsers}
+          setSelectedUsers={setSelectedUsers}
+          ownerId={userData?.user?.id ?? 0}
+        />
+        <div className="flex flex-col items-center justify-center">
+          <form onSubmit={handleFormSubmit} encType="multipart/form-data" className="w-full">
+            <Input
+              type="text"
+              placeholder="Nome do projeto"
+              className="mb-4"
+              value={projectData.name}
+              onChange={(e) =>
+                setProjectData({ ...projectData, name: e.target.value })
+              }
+            />
+            <Textarea
+              placeholder="Descrição do projeto"
+              value={projectData.content}
+              onChange={(e) =>
+                setProjectData({ ...projectData, content: e.target.value })
+              }
+              className="mt-2 bg-zinc-800 border border-zinc-700 text-white focus:ring-blue-500 focus:border-blue-500 rounded-md w-full p-2 resize-none"
+              rows={2}
+            />
+            <div className="flex flex-col tablet:flex-row justify-center items-center">
+              <AudioUploadProjects
+                onFileChange={(file, fileType) =>
+                  setProjectData({ ...projectData, media_path: file, media_type: fileType })
+                }
+              />
+              <ImageUploadProjects
+                onFileChange={(file, fileType) =>
+                  setProjectData({ ...projectData, cover_path: file, cover_pathType: fileType })
+                }
+              />
+            </div>
+            <div className="w-full flex">
+              <Button
+                type="submit"
+                variant="outline"
+                className="w-[85%] mx-auto mt-6"
+              >
+                Postar Projeto
+              </Button>
+            </div>
+          </form>
         </div>
-      )}
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

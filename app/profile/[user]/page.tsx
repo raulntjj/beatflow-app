@@ -5,6 +5,12 @@ import ProfilePhoto from "@/components/user/profile-photo";
 import getToken from "@/utils/getToken";
 import { UserContext } from "@/context/user-context";
 import UserPost from "@/components/user/user-post";
+import { Button } from "../../../components/ui/button";
+import { Separator } from "../../../components/ui/separator";
+import { Input } from "../../../components/ui/input";
+import { Textarea } from "../../../components/ui/textarea";
+import { FileInputIcon } from "lucide-react";
+import { FileUpload } from "../../../components/ui/file-upload";
 
 interface UserData {
   id: number;
@@ -136,6 +142,31 @@ export default function Profile({
 
   const isSameUser = resolvedParams?.user === userSession?.user?.user;
 
+  const handleFollow = async () => {
+    const userToken = await getToken();
+
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/follows`;
+    const method = isFollowing ? "DELETE" : "POST";
+    const body = JSON.stringify({
+      follower_id: userSession?.user?.id,
+      followed_id: userData?.id,
+    });
+
+    const res = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userToken}`,
+      },
+      body,
+    });
+
+    if (res.ok) {
+      setIsFollowing(!isFollowing);
+      setFollowersCount((prev) => (isFollowing ? prev - 1 : prev + 1));
+    }
+  };
+
   const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
@@ -169,33 +200,48 @@ export default function Profile({
       alert("Erro ao enviar os dados. Verifique o console.");
     }
   };
-  
 
   return (
-    <div>
-      <div>
-        <ProfilePhoto src={userData?.profile_photo_temp} alt={userData?.name} />
-        <h1>{userData?.user}</h1>
-        <div className="flex gap-2">
-          <span>Seguindo: {userData?.followed_count}</span>
-          <span>Seguidores: {followersCount}</span>
+    <div className="flex flex-col justify-center items-center gap-5">
+      <div className="w-full flex flex-col justify-center items-center gap-5">
+        <div className="w-full  flex justify-center items-center gap-5">
+          <ProfilePhoto size="profile" src={userData?.profile_photo_temp} alt={userData?.name} />
+          <div className="flex justify-start flex-col gap-5">
+            <div className="flex justify-start items-center gap-5">
+              <p className="text-lg">{userData?.user}</p> 
+              {!isSameUser && (
+                <Button size={"sm"} variant={"outline"} onClick={handleFollow}>
+                  {isFollowing ? "Deixar de seguir" : "Seguir"}
+                </Button>
+              )}
+              {isSameUser && (
+                <Button size={"sm"} variant={"outline"} onClick={() => setIsEditing(true)}
+                >
+                  Editar Perfil
+                </Button>
+              )}
+            </div>
+            <div className="flex gap-5">
+              <span className="text-sm">Seguindo: <span className="font-bold">{userData?.followed_count}    </span></span>
+              <span className="text-sm">Seguidores: <span className="font-bold">{followersCount}</span></span>
+            </div>
+            <div>
+              <p>{userData?.bio}</p>
+            </div>
+          </div>
         </div>
-        <p>{userData?.bio}</p>
+        <div className="w-full flex justify-center items-center gap-5">
+          <span className="w-full h-full border border-zinc-700" />
+          <span>
+            Postagens
+          </span>
+          <span className="w-full h-full border border-zinc-700" />
+
+          <span/>
+        </div>
       </div>
-      {!isSameUser && (
-        <button className="p-2 bg-blue-600 rounded-md" onClick={handleFollow}>
-          {isFollowing ? "Deixar de seguir" : "Seguir"}
-        </button>
-      )}
-      {isSameUser && (
-        <button
-          className="p-2 bg-green-600 rounded-md"
-          onClick={() => setIsEditing(true)}
-        >
-          Editar Perfil
-        </button>
-      )}
-      <div className="relative flex flex-col space-y-10 w-[500px]">
+
+      <div className="relative w-full flex flex-col space-y-10">
         {posts.length > 0 ? (
           posts.map((post) => (
             <article key={post.id} className="w-full">
@@ -224,87 +270,60 @@ export default function Profile({
 
       {isEditing && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-4 rounded-md">
+          <div className="bg-background p-4 rounded-md">
             <h2 className="text-xl mb-4">Editar Perfil</h2>
             <form onSubmit={handleEditSubmit}>
               <div className="mb-4">
-                <label className="block">Nome</label>
-                <input
+                <label className="text-sm block text-zinc-500 pb-1">Nome</label>
+                <Input
                   type="text"
                   name="name"
                   defaultValue={userData.name}
-                  className="border p-2 w-full"
+                  className="border p-2 w-full bg-zinc-800 border-zinc-700" 
                 />
               </div>
               <div className="mb-4">
-                <label className="block">Sobrenome</label>
-                <input
+                <label className="text-sm block text-zinc-500 pb-1">Sobrenome</label>
+                <Input
                   type="text"
                   name="last_name"
                   defaultValue={userData.last_name}
-                  className="border p-2 w-full"
-                />
-              </div>
-              {/* <div className="mb-4">
-                <label className="block">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  defaultValue={userData.email}
-                  className="border p-2 w-full"
+                  className="border p-2 w-full bg-zinc-800 border-zinc-700"
                 />
               </div>
               <div className="mb-4">
-                <label className="block">Usuário</label>
-                <input
-                  type="text"
-                  name="user"
-                  defaultValue={userData.user}
-                  className="border p-2 w-full"
-                />
-              </div> */}
-              <div className="mb-4">
-                <label className="block">Foto de Perfil</label>
-                <input
+                <label className="text-sm block text-zinc-500 pb-1">Foto de Perfil</label>
+                <Input
                   type="file"
                   name="profile_photo_path"
-                  className="border p-2 w-full"
+                  className="border p-2 w-full bg-zinc-800 border-zinc-700"
                   accept="image/*"
                 />
               </div>
               <div className="mb-4">
-                <label className="block">Biografia</label>
-                <textarea
+                <label className="text-sm block text-zinc-500 pb-1">Biografia</label>
+                <Textarea
                   name="bio"
                   defaultValue={userData.bio}
-                  className="border p-2 w-full"
+                  className="border p-2 w-full bg-zinc-800 border-zinc-700"
                 />
               </div>
-              {/* <div className="mb-4">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    name="is_private"
-                    defaultChecked={userData.is_private}
-                    className="mr-2"
-                  />
-                  Perfil Privado
-                </label>
-              </div> */}
-              <div className="flex gap-2">
-                <button
+              <div className="flex justify-around items-center gap-4">
+                <Button
                   type="submit"
-                  className="p-2 bg-blue-600 text-white rounded-md"
+                  variant={"outline"}
+                  className="w-full"
                 >
                   Salvar
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
-                  className="p-2 bg-gray-400 text-white rounded-md"
+                  variant={"outline"}
+                  className="w-full"
                   onClick={() => setIsEditing(false)}
                 >
                   Cancelar
-                </button>
+                </Button>
               </div>
             </form>
           </div>
