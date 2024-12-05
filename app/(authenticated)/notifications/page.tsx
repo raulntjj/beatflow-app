@@ -50,6 +50,7 @@ export default function Notifications() {
               ? {
                   id: notification.user.id,
                   name: `${notification.user.name} ${notification.user.last_name}`,
+                  user: notification.user.user,
                   avatarSrc: notification.user.profile_photo_temp || "",
                 }
               : null,
@@ -133,7 +134,7 @@ export default function Notifications() {
                       <div className="text-left space-y-1">
                         {notification.user && (
                           <a
-                            href={`/profile/${notification.user.id}`}
+                            href={`/profile/${notification.user.user}`}
                             className="cursor-pointer"
                           >
                             <span className="block text-sm font-semibold text-foreground">
