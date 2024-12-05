@@ -37,6 +37,8 @@ export default function CreateProjects() {
     media_type: "audio",
   });
 
+  const [isPosting, setIsPosting] = useState(false);
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -127,6 +129,8 @@ export default function CreateProjects() {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    setLoading(true);
+
     const ownerId = userData?.user?.id;
     if (!ownerId) {
       alert("Owner ID is required");
@@ -196,6 +200,8 @@ export default function CreateProjects() {
     } catch (err) {
       console.error("Erro ao criar projeto:", err);
       toast.error("Erro ao criar o projeto.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -248,6 +254,8 @@ export default function CreateProjects() {
               />
             </div>
             <div className="w-full flex">
+              (isPosting ? (<p className="p-4 text-foreground/70">Postando ...</p>) :
+              (
               <Button
                 type="submit"
                 variant="outline"
@@ -255,6 +263,7 @@ export default function CreateProjects() {
               >
                 Postar Projeto
               </Button>
+               ))
             </div>
           </form>
         </div>
