@@ -81,7 +81,7 @@ export default function RegisterForm() {
       }
 
       const formDataToSendLogin = new FormData();
-      formDataToSend.append("user", formData.usuario);
+      formDataToSend.append("identifier", formData.usuario);
       formDataToSend.append("password", formData.senha);
 
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {

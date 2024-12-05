@@ -169,29 +169,26 @@ export default function Profile({
 
   const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     const formData = new FormData(e.currentTarget);
-  
-    formData.append('_method', 'PUT');
-  
+
+    formData.append("_method", "PUT");
+
     try {
       const userToken = await getToken();
-  
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/me`,
-        {
-          method: "POST", // Enviado como POST para suporte ao FormData com _method
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-          body: formData,
-        }
-      );
-  
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
+        method: "POST", // Enviado como POST para suporte ao FormData com _method
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+        body: formData,
+      });
+
       if (!res.ok) {
         throw new Error("Erro ao salvar as alterações.");
       }
-  
+
       const updatedData = await res.json();
       setUserData(updatedData.response); // Atualiza os dados do usuário
       setIsEditing(false); // Fecha o modal
@@ -205,25 +202,37 @@ export default function Profile({
     <div className="flex flex-col justify-center items-center gap-5">
       <div className="w-full flex flex-col justify-center items-center gap-5">
         <div className="lg:grid lg:grid-cols-3 flex w-full justify-start items-center gap-5">
-          <ProfilePhoto className="col-span-1 w-20 h-20 sm:w-28 sm:h-28 lg:w-36 lg:h-36" src={userData?.profile_photo_temp} alt={userData?.name} />
+          <ProfilePhoto
+            className="col-span-1 w-20 h-20 sm:w-28 sm:h-28 lg:w-36 lg:h-36"
+            src={userData?.profile_photo_temp}
+            alt={userData?.name}
+          />
           <div className="col-span-2 flex justify-start flex-col gap-5">
             <div className="flex justify-start items-center gap-5">
-              <p className="text-lg">{userData?.user}</p> 
+              <p className="text-lg">{userData?.user}</p>
               {!isSameUser && (
                 <Button size={"sm"} variant={"outline"} onClick={handleFollow}>
                   {isFollowing ? "Deixar de seguir" : "Seguir"}
                 </Button>
               )}
               {isSameUser && (
-                <Button size={"sm"} variant={"outline"} onClick={() => setIsEditing(true)}
+                <Button
+                  size={"sm"}
+                  variant={"outline"}
+                  onClick={() => setIsEditing(true)}
                 >
                   Editar Perfil
                 </Button>
               )}
             </div>
             <div className="flex gap-5">
-              <span className="text-sm">Seguindo: <span className="font-bold">{userData?.followed_count}    </span></span>
-              <span className="text-sm">Seguidores: <span className="font-bold">{followersCount}</span></span>
+              <span className="text-sm">
+                Seguidores: <span className="font-bold">{followersCount}</span>
+              </span>
+              <span className="text-sm">
+                Seguindo:{" "}
+                <span className="font-bold">{userData?.followed_count} </span>
+              </span>
             </div>
             <div>
               <p>{userData?.bio}</p>
@@ -232,9 +241,7 @@ export default function Profile({
         </div>
         <div className="w-full flex justify-center items-center gap-5">
           <span className="w-full h-full border border-zinc-700" />
-          <span>
-            Postagens
-          </span>
+          <span>Postagens</span>
           <span className="w-full h-full border border-zinc-700" />
         </div>
       </div>
@@ -277,11 +284,13 @@ export default function Profile({
                   type="text"
                   name="name"
                   defaultValue={userData.name}
-                  className="border p-2 w-full bg-zinc-800 border-zinc-700" 
+                  className="border p-2 w-full bg-zinc-800 border-zinc-700"
                 />
               </div>
               <div className="mb-4">
-                <label className="text-sm block text-zinc-500 pb-1">Sobrenome</label>
+                <label className="text-sm block text-zinc-500 pb-1">
+                  Sobrenome
+                </label>
                 <Input
                   type="text"
                   name="last_name"
@@ -290,7 +299,9 @@ export default function Profile({
                 />
               </div>
               <div className="mb-4">
-                <label className="text-sm block text-zinc-500 pb-1">Foto de Perfil</label>
+                <label className="text-sm block text-zinc-500 pb-1">
+                  Foto de Perfil
+                </label>
                 <Input
                   type="file"
                   name="profile_photo_path"
@@ -299,7 +310,9 @@ export default function Profile({
                 />
               </div>
               <div className="mb-4">
-                <label className="text-sm block text-zinc-500 pb-1">Biografia</label>
+                <label className="text-sm block text-zinc-500 pb-1">
+                  Biografia
+                </label>
                 <Textarea
                   name="bio"
                   defaultValue={userData.bio}
@@ -307,11 +320,7 @@ export default function Profile({
                 />
               </div>
               <div className="flex justify-around items-center gap-4">
-                <Button
-                  type="submit"
-                  variant={"outline"}
-                  className="w-full"
-                >
+                <Button type="submit" variant={"outline"} className="w-full">
                   Salvar
                 </Button>
                 <Button
